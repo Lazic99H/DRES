@@ -10,9 +10,9 @@ app.config["SQLALCHEMY_DATABASE_URL"] = "mysql+mysqlconnector://root:123@0.0.0.0
 db.init_app(app)
 ma.init_app(app)
 
-@app.route('/api')
+@app.route('/')
 def main():
-    return "REKLI SU MI STA O TEBI MISLE"
+    return "<h1>Main funk</h1>"
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=5002)
