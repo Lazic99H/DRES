@@ -46,6 +46,7 @@ class SignInForm extends Component {
             <input
               type="email"
               id="email"
+              required
               className="formFieldInput"
               placeholder="Enter your email"
               name="email"
@@ -61,6 +62,7 @@ class SignInForm extends Component {
             <input
               type="password"
               id="password"
+              required
               className="formFieldInput"
               placeholder="Enter your password"
               name="password"
