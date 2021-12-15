@@ -22,8 +22,18 @@ function SignInForm (props) {
   }
 
   const handleSubmit = event => {
-    event.preventDefault();
+    //event.preventDefault();
 
+    fetch('http://127.0.0.1:5002/signin',{
+        method: 'POST',
+        body: JSON.stringify({
+            content:email
+        }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    }).then(response => response.json())
+      .then(message => console.log(message))
     //console.log("The form was submitted with the following data:");
    // console.log(this.state);
   }
