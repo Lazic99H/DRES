@@ -11,7 +11,7 @@ ma.init_app(app)
 
 @app.route('/')
 def main():
-    return "<h1>Main funk</h1>"
+    return "<h1>HELLO WORLD</h1>"
 
 @app.route('/signin', methods=['POST'])
 def signin():
