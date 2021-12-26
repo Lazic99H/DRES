@@ -1,6 +1,7 @@
 from flask import Flask, request, json
 from sign import bp_sign
 from database.config import db, ma
+from model.user import User, UserSchema
 
 app = Flask(__name__)
 app.register_blueprint(bp_sign)
