@@ -1,18 +1,26 @@
 from flask import Flask, request, json, jsonify
-from sign import bp_sign
+from engine.sign import bp_sign
 from database.config import db, ma
+from flask_cors import CORS
 from model.user import User, UserSchema
 
-app = Flask(__name__)
-app.register_blueprint(bp_sign)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/dresdatabase'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False;
+def create_app():
+    app = Flask(__name__)
+    CORS(app)
+    app.register_blueprint(bp_sign)
 
-db.init_app(app)
-ma.init_app(app)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/dresdatabase'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False;
 
-user_schema = UserSchema()
+    db.init_app(app)
+    ma.init_app(app)
+    return app
+
+
+app = create_app()
+
+users_schema = UserSchema(many=True)
 
 
 @app.route('/', methods=['GET'])
@@ -34,7 +42,9 @@ def add_user():
     new_user = User(name=name, last_name=last_name, address=address, city=city, country=country, phone=phone, mail=mail, password=password)
     db.session.add(new_user)
     db.session.commit()
-    return user_schema.jsonify(new_user)
+    users = db.session.query(1)
+    user_list = users_schema.dump(users)
+    return jsonify(user_list)
 
 
 if __name__ == "__main__":

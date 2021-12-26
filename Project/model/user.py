@@ -3,7 +3,6 @@ from marshmallow import Schema, fields
 
 
 class User(db.Model):
-    __tablename__ = 'user'
     account_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
@@ -27,12 +26,7 @@ class User(db.Model):
 
 
 class UserSchema(Schema):
-    class Meta:
-        fields = ('account_id', 'name', 'last_name', 'address', 'city', 'country', 'phone', 'mail', 'password', 'verification')
-
-
-
-  """  account_id = fields.Number()
+    account_id = fields.Number()
     name = fields.Str()
     last_name = fields.Str()
     address = fields.Str()
@@ -42,4 +36,4 @@ class UserSchema(Schema):
     mail = fields.Str()
     password = fields.Str()
     verification = fields.Boolean()
-"""
+
