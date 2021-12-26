@@ -1,25 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {BrowserRouter as Router, Routes, Route, Link} from "react-router-dom";
+import SignUpForm from "./components/SignUpForm";
+import SignInForm from "./components/SignInForm";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import "./App.css";
+
+function App (props) {
+    return (
+      <Router basename="/">
+        <div className="App">
+          <div className="appAside" />
+          <div className="appForm">
+            <div className="pageSwitcher">
+              <Link
+                to="/sign-in"
+                activeClassName="pageSwitcherItem-active"
+                className="pageSwitcherItem"
+              >
+                Sign In
+              </Link>
+              <Link
+                exact
+                to="/"
+                activeClassName="pageSwitcherItem-active"
+                className="pageSwitcherItem"
+              >
+                Sign Up
+              </Link>
+            </div>
+
+            <div className="formTitle">
+              <Link
+                to="/sign-in"
+                activeClassName="formTitleLink-active"
+                className="formTitleLink"
+              >
+                Sign In
+              </Link>{" "}
+              or{" "}
+              <Link
+                exact
+                to="/"
+                activeClassName="formTitleLink-active"
+                className="formTitleLink"
+              >
+                Sign Up
+              </Link>
+            </div>
+            <Routes>
+                <Route exact path="/" element={<SignUpForm/>} />
+                <Route path="/sign-in" element={<SignInForm/>} />
+            </Routes>
+          </div>
+        </div>
+      </Router>
+    );
 }
 
 export default App;

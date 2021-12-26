@@ -42,7 +42,8 @@ def add_user():
     new_user = User(name=name, last_name=last_name, address=address, city=city, country=country, phone=phone, mail=mail, password=password)
     db.session.add(new_user)
     db.session.commit()
-    users = db.session.query(1)
+    account_id = new_user.account_id
+    users = db.session.query(account_id)
     user_list = users_schema.dump(users)
     return jsonify(user_list)
 
