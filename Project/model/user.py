@@ -1,17 +1,17 @@
 from database.config import db
-from marshmallow import Schema,fields
+from marshmallow import Schema, fields
 
 
 class User(db.Model):
     __tablename__ = 'user'
     account_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    last_name = db.Column(db.String(50))
+    name = db.Column(db.String(100))
+    last_name = db.Column(db.String(100))
     address = db.Column(db.String(100))
-    city = db.Column(db.String(50))
-    country = db.Column(db.String(50))
+    city = db.Column(db.String(100))
+    country = db.Column(db.String(100))
     phone = db.Column(db.String(30))
-    mail = db.Column(db.String(50))
+    mail = db.Column(db.String(100))
     password = db.Column(db.String(100))
     verification = db.Column(db.Boolean, default=False)
 
@@ -27,7 +27,12 @@ class User(db.Model):
 
 
 class UserSchema(Schema):
-    account_id = fields.Number()
+    class Meta:
+        fields = ('account_id', 'name', 'last_name', 'address', 'city', 'country', 'phone', 'mail', 'password', 'verification')
+
+
+
+  """  account_id = fields.Number()
     name = fields.Str()
     last_name = fields.Str()
     address = fields.Str()
@@ -36,6 +41,5 @@ class UserSchema(Schema):
     phone = fields.Str()
     mail = fields.Str()
     password = fields.Str()
-    balance = fields.Number()
     verification = fields.Boolean()
-    currency = fields.Str()
+"""
