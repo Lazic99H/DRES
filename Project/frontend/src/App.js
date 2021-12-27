@@ -14,15 +14,14 @@ function App (props) {
             <div className="pageSwitcher">
               <Link
                 to="/sign-in"
-                activeClassName="pageSwitcherItem-active"
+                //activeClassName="pageSwitcherItem-active"
                 className="pageSwitcherItem"
               >
                 Sign In
               </Link>
               <Link
-                exact
                 to="/"
-                activeClassName="pageSwitcherItem-active"
+                //activeClassName="pageSwitcherItem-active"
                 className="pageSwitcherItem"
               >
                 Sign Up
@@ -32,23 +31,22 @@ function App (props) {
             <div className="formTitle">
               <Link
                 to="/sign-in"
-                activeClassName="formTitleLink-active"
+               // activeClassName="formTitleLink-active"
                 className="formTitleLink"
               >
                 Sign In
               </Link>{" "}
               or{" "}
               <Link
-                exact
                 to="/"
-                activeClassName="formTitleLink-active"
+                //activeClassName="formTitleLink-active"
                 className="formTitleLink"
               >
                 Sign Up
               </Link>
             </div>
             <Routes>
-                <Route exact path="/" element={<SignUpForm/>} />
+                <Route path="/" element={<SignUpForm/>} />
                 <Route path="/sign-in" element={<SignInForm/>} />
             </Routes>
           </div>

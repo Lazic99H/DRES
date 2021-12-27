@@ -2,7 +2,7 @@ from flask import Flask, request, json, jsonify
 from engine.sign import bp_sign
 from database.config import db, ma
 from flask_cors import CORS
-from model.user import User, UserSchema
+from model.users import Users, UsersSchema
 
 
 def create_app():
@@ -20,7 +20,8 @@ def create_app():
 
 app = create_app()
 
-users_schema = UserSchema(many=True)
+user_schema = UsersSchema
+users_schema = UsersSchema(many=True)
 
 
 @app.route('/', methods=['GET'])
@@ -30,6 +31,8 @@ def main():
 
 @app.route('/add', methods=['POST'])
 def add_user():
+    first_user = Users.query.get(1)
+
     name = request.json['name']
     last_name = request.json['last_name']
     address = request.json['address']
@@ -39,12 +42,15 @@ def add_user():
     mail = request.json['mail']
     password = request.json['password']
 
-    new_user = User(name=name, last_name=last_name, address=address, city=city, country=country, phone=phone, mail=mail, password=password)
+    new_user = Users(name=name, last_name=last_name, address=address, city=city, country=country, phone=phone, mail=mail, password=password)
     db.session.add(new_user)
     db.session.commit()
     account_id = new_user.account_id
+    all_users = Users.query.all()
     users = db.session.query(account_id)
-    user_list = users_schema.dump(users)
+    user_list = users_schema.dump(
+        filter(lambda t: t.account_id == 1, all_users)
+    )
     return jsonify(user_list)
 
 

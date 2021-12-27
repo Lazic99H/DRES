@@ -1,53 +1,51 @@
 import React, {useState,useEffects } from "react";
 import { Link } from "react-router-dom";
+import APIServiceSignFrom from './APIServices/APIServiceSignFrom'
 
 function SignInForm (props) {
 
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
+      const [mail,setMail] = useState("");
+      const [password,setPassword] = useState("");
 
-/*
-  useEffects(() => {
-    fetch('/api').then(response => {
-        if(response.ok){
-            return response.json()
-        }
-    }).then(data => console.log(data))
-  },[])
-*/
-  const handleChange = event => {
-    let target = event.target;
-    let value = target.type === "checkbox" ? target.checked : target.value;
-    let name = target.name;
+      const logIn = () => {
+          APIServiceSignFrom.SignIn({mail, password})
+          .then(resp => console.log(resp))
+          .catch(error => console.log(error))
+      }
 
-    if(name === 'email')
-        setEmail(value)
-    if(name === 'password')
-        setPassword(value)
-  }
+      const handleChange = event => {
+        let target = event.target;
+        let value = target.type === "checkbox" ? target.checked : target.value;
+        let name = target.name;
 
-  const handleSubmit = event => {
-    event.preventDefault();
+        if(name === 'mail')
+            setMail(value)
+        if(name === 'password')
+            setPassword(value)
+      }
 
-    console.log("The form was submitted with the following data:");
-   // console.log(this.state);
-  }
+      const handleSubmit = event => {
+        event.preventDefault();
+
+        console.log("The form was submitted with the following data:");
+       // console.log(this.state);
+      }
 
     return (
       <div className="formCenter">
         <form className="formFields" onSubmit={handleSubmit}>
           <div className="formField">
-            <label className="formFieldLabel" htmlFor="email">
+            <label className="formFieldLabel" htmlFor="mail">
               E-Mail Address
             </label>
             <input
               type="email"
-              id="email"
+              id="mail"
               required
               className="formFieldInput"
               placeholder="Enter your email"
-              name="email"
-              value={email}
+              name="mail"
+              value={mail}
               onChange={handleChange}
             />
           </div>
@@ -69,7 +67,12 @@ function SignInForm (props) {
           </div>
 
           <div className="formField">
-            <button className="formFieldButton">Sign In</button>{" "}
+            <button
+                onClick ={logIn}
+                className="formFieldButton">
+                Sign In
+            </button>
+            {" "}
             <Link to="/" className="formFieldLink">
               Create an account
             </Link>

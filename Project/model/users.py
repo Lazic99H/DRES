@@ -2,7 +2,7 @@ from database.config import db
 from marshmallow import Schema, fields
 
 
-class User(db.Model):
+class Users(db.Model):
     account_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
@@ -25,7 +25,7 @@ class User(db.Model):
         self.password = password
 
 
-class UserSchema(Schema):
+class UsersSchema(Schema):
     account_id = fields.Number()
     name = fields.Str()
     last_name = fields.Str()

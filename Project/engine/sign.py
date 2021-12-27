@@ -3,8 +3,9 @@ from flask import jsonify, Blueprint, request, json
 bp_sign = Blueprint('sign', __name__, url_prefix='/sign')
 
 
-@bp_sign.route('/in', methods=['GET'])
+@bp_sign.route('/in', methods=['POST'])
 def sign_in():
+
     return {'signIn': "Signed IN"}
 
 
