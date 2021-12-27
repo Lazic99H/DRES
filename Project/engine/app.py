@@ -1,14 +1,14 @@
 from flask import Flask, request, json, jsonify
 from engine.sign import bp_sign
 from database.config import db, ma
-from flask_cors import CORS
+from database.config import CORS
 from model.users import Users, UsersSchema
 
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
     app.register_blueprint(bp_sign)
+    CORS(app)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/dresdatabase'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False;

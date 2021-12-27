@@ -1,13 +1,26 @@
-import React from "react";
-import {BrowserRouter as Router, Routes, Route, Link} from "react-router-dom";
+import React, {useState} from "react";
+import {BrowserRouter as Router, Routes, Route, Link, useNavigate} from "react-router-dom";
 import SignUpForm from "./components/SignUpForm";
 import SignInForm from "./components/SignInForm";
+import Home from "./components/Home";
 
 import "./App.css";
 
 function App (props) {
+    const [showSign,setShowSign] = useState(null)
+    const redirectToHome = (user) => {
+        if(user.length > 0){
+            setShowSign(user)
+        }
+    }
+
     return (
       <Router basename="/">
+        {showSign ?
+         <Routes>
+            <Route path="/home" element={<Home user={showSign}/>} />
+         </Routes>
+         :
         <div className="App">
           <div className="appAside" />
           <div className="appForm">
@@ -47,10 +60,10 @@ function App (props) {
             </div>
             <Routes>
                 <Route path="/" element={<SignUpForm/>} />
-                <Route path="/sign-in" element={<SignInForm/>} />
+                <Route path="/sign-in" element={<SignInForm redirectToHome={redirectToHome}/>} />
             </Routes>
           </div>
-        </div>
+        </div>}
       </Router>
     );
 }

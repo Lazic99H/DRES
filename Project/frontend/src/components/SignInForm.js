@@ -1,17 +1,13 @@
 import React, {useState,useEffects } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import APIServiceSignFrom from './APIServices/APIServiceSignFrom'
 
 function SignInForm (props) {
+      let navigate = useNavigate()
 
       const [mail,setMail] = useState("");
       const [password,setPassword] = useState("");
-
-      const logIn = () => {
-          APIServiceSignFrom.SignIn({mail, password})
-          .then(resp => console.log(resp))
-          .catch(error => console.log(error))
-      }
+      const [navToHome,setNavToHome] = useState(0);
 
       const handleChange = event => {
         let target = event.target;
@@ -26,7 +22,10 @@ function SignInForm (props) {
 
       const handleSubmit = event => {
         event.preventDefault();
-
+        APIServiceSignFrom.SignIn({mail, password})
+          .then(resp => setNavToHome(resp.length))
+          .then(resp => props.redirectToHome(resp))
+          .catch(error => console.log(error))
         console.log("The form was submitted with the following data:");
        // console.log(this.state);
       }
@@ -68,7 +67,7 @@ function SignInForm (props) {
 
           <div className="formField">
             <button
-                onClick ={logIn}
+                onClick ={() => (navToHome > 0 ?  navigate("/home") : navigate("/sign-in"))}
                 className="formFieldButton">
                 Sign In
             </button>

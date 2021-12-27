@@ -1,25 +1,44 @@
 import React,{ useState } from "react";
 import { Link } from "react-router-dom";
+import APIServiceSignFrom from './APIServices/APIServiceSignFrom'
 
 function SignUpForm (props) {
 
-   const [email,setEmail] = useState("");
-   const [password,setPassword] = useState("");
    const [name,setName] = useState("");
+   const [last_name,setLastName] = useState("");
+   const [address,setAddress] = useState("");
+   const [city,setCity] = useState("");
+   const [country,setCountry] = useState("");
+   const [phone,setPhone] = useState("");
+   const [mail,setMail] = useState("");
+   const [password,setPassword] = useState("");
    const [hasAgreed,setHasAgreed] = useState(false);
 
+  const registerValidation = (props) => {
+        APIServiceSignFrom.SignUp({name,last_name,address,city,country,phone,mail,password})
+  }
 
   const handleChange = event => {
     let target = event.target;
     let value = target.type === "checkbox" ? target.checked : target.value;
     let name = target.name;
 
-    if(name === 'email')
-        setEmail(value)
-    if(name === 'password')
-        setPassword(value)
     if(name === "name")
         setName(value)
+    if(name === "last_name")
+        setLastName(value)
+    if(name === "address")
+        setAddress(value)
+    if(name === "city")
+        setCity(value)
+    if(name === "country")
+        setCountry(value)
+    if(name === "phone")
+        setPhone(value)
+    if(name === 'mail')
+        setMail(value)
+    if(name === 'password')
+        setPassword(value)
     if(name === "hasAgreed")
         setHasAgreed(value)
   }
@@ -28,7 +47,7 @@ function SignUpForm (props) {
     e.preventDefault();
 
     console.log("The form was submitted with the following data:");
-    console.log(email + password + name);
+    console.log(mail + password + name);
   }
 
     return (
@@ -36,18 +55,116 @@ function SignUpForm (props) {
         <form onSubmit={handleSubmit} className="formFields">
           <div className="formField">
             <label className="formFieldLabel" htmlFor="name">
-              Full Name
+              First Name
             </label>
             <input
               type="text"
               id="name"
+              required
               className="formFieldInput"
-              placeholder="Enter your full name"
+              placeholder="Enter your first name"
               name="name"
               value={name}
               onChange={handleChange}
             />
           </div>
+
+          <div className="formField">
+            <label className="formFieldLabel" htmlFor="last_name">
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="last_name"
+              required
+              className="formFieldInput"
+              placeholder="Enter your last name"
+              name="last_name"
+              value={last_name}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="formField">
+            <label className="formFieldLabel" htmlFor="address">
+              Address
+            </label>
+            <input
+              type="text"
+              id="address"
+              required
+              className="formFieldInput"
+              placeholder="Enter your address"
+              name="address"
+              value={address}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="formField">
+            <label className="formFieldLabel" htmlFor="city">
+              City
+            </label>
+            <input
+              type="text"
+              id="city"
+              required
+              className="formFieldInput"
+              placeholder="Enter your city"
+              name="city"
+              value={city}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="formField">
+            <label className="formFieldLabel" htmlFor="country">
+              Country
+            </label>
+            <input
+              type="text"
+              id="country"
+              required
+              className="formFieldInput"
+              placeholder="Enter your country"
+              name="country"
+              value={country}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="formField">
+            <label className="formFieldLabel" htmlFor="phone">
+              Phone number
+            </label>
+            <input
+              type="text"
+              id="phone"
+              required
+              className="formFieldInput"
+              placeholder="Enter your phone"
+              name="phone"
+              value={phone}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="formField">
+            <label className="formFieldLabel" htmlFor="mail">
+              E-Mail Address
+            </label>
+            <input
+              type="email"
+              id="mail"
+              required
+              className="formFieldInput"
+              placeholder="Enter your email"
+              name="mail"
+              value={mail}
+              onChange={handleChange}
+            />
+          </div>
+
           <div className="formField">
             <label className="formFieldLabel" htmlFor="password">
               Password
@@ -55,24 +172,11 @@ function SignUpForm (props) {
             <input
               type="password"
               id="password"
+              required
               className="formFieldInput"
               placeholder="Enter your password"
               name="password"
               value={password}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="formField">
-            <label className="formFieldLabel" htmlFor="email">
-              E-Mail Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="formFieldInput"
-              placeholder="Enter your email"
-              name="email"
-              value={email}
               onChange={handleChange}
             />
           </div>
@@ -84,6 +188,7 @@ function SignUpForm (props) {
                 type="checkbox"
                 name="hasAgreed"
                 value={hasAgreed}
+                required
                 onChange={handleChange}
               />{" "}
               I agree all statements in{" "}
@@ -94,7 +199,7 @@ function SignUpForm (props) {
           </div>
 
           <div className="formField">
-            <button className="formFieldButton">Sign Up</button>{" "}
+            <button className="formFieldButton" onClick = {() => registerValidation()}>Sign Up</button>{" "}
             <Link to="/sign-in" className="formFieldLink">
               I'm already member
             </Link>
@@ -104,113 +209,3 @@ function SignUpForm (props) {
     );
 }
 export default SignUpForm;
-
-/*
-class SignUpForm extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      email: "",
-      password: "",
-      name: "",
-      hasAgreed: false
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleChange(event) {
-    let target = event.target;
-    let value = target.type === "checkbox" ? target.checked : target.value;
-    let name = target.name;
-
-    this.setState({
-      [name]: value
-    });
-  }
-
-  handleSubmit(e) {
-    e.preventDefault();
-
-    console.log("The form was submitted with the following data:");
-    console.log(this.state);
-  }
-
-  render() {
-    return (
-      <div className="formCenter">
-        <form onSubmit={this.handleSubmit} className="formFields">
-          <div className="formField">
-            <label className="formFieldLabel" htmlFor="name">
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              className="formFieldInput"
-              placeholder="Enter your full name"
-              name="name"
-              value={this.state.name}
-              onChange={this.handleChange}
-            />
-          </div>
-          <div className="formField">
-            <label className="formFieldLabel" htmlFor="password">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="formFieldInput"
-              placeholder="Enter your password"
-              name="password"
-              value={this.state.password}
-              onChange={this.handleChange}
-            />
-          </div>
-          <div className="formField">
-            <label className="formFieldLabel" htmlFor="email">
-              E-Mail Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="formFieldInput"
-              placeholder="Enter your email"
-              name="email"
-              value={this.state.email}
-              onChange={this.handleChange}
-            />
-          </div>
-
-          <div className="formField">
-            <label className="formFieldCheckboxLabel">
-              <input
-                className="formFieldCheckbox"
-                type="checkbox"
-                name="hasAgreed"
-                value={this.state.hasAgreed}
-                onChange={this.handleChange}
-              />{" "}
-              I agree all statements in{" "}
-              <a href="null" className="formFieldTermsLink">
-                terms of service
-              </a>
-            </label>
-          </div>
-
-          <div className="formField">
-            <button className="formFieldButton">Sign Up</button>{" "}
-            <Link to="/sign-in" className="formFieldLink">
-              I'm already member
-            </Link>
-          </div>
-        </form>
-      </div>
-    );
-  }
-}
-export default SignUpForm;
-*/
