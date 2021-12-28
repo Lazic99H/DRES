@@ -1,10 +1,12 @@
-function Home (props) {
-    console.log(props.user)
-    console.log(props.user[0]['account_id'])
+import {BrowserRouter as Router, Routes, Route, Link, useNavigate} from "react-router-dom";
+
+function Home () {
+    //console.log(props.user)
+    //console.log(props.user[0]['account_id'])
     return (
 
-      <div>HOME PAGE
-        {props.user[0]['city']}
+      <div>
+        HOME PAGE
       </div>
     );
 }

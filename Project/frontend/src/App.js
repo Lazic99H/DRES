@@ -7,63 +7,26 @@ import Home from "./components/Home";
 import "./App.css";
 
 function App (props) {
-    const [showSign,setShowSign] = useState(null)
+    const [logged_user,setLogged_user] = useState([])
+
+
     const redirectToHome = (user) => {
-        if(user.length > 0){
-            setShowSign(user)
-        }
+    console.log(JSON.parse(sessionStorage.getItem("logged_user")))
+
+    setLogged_user(JSON.parse(sessionStorage.getItem("logged_user")))
+
+    console.log("SAD SAM OVDJE")
+    console.log(logged_user.length)
+
     }
 
     return (
       <Router basename="/">
-        {showSign ?
-         <Routes>
-            <Route path="/home" element={<Home user={showSign}/>} />
-         </Routes>
-         :
-        <div className="App">
-          <div className="appAside" />
-          <div className="appForm">
-            <div className="pageSwitcher">
-              <Link
-                to="/sign-in"
-                //activeClassName="pageSwitcherItem-active"
-                className="pageSwitcherItem"
-              >
-                Sign In
-              </Link>
-              <Link
-                to="/"
-                //activeClassName="pageSwitcherItem-active"
-                className="pageSwitcherItem"
-              >
-                Sign Up
-              </Link>
-            </div>
-
-            <div className="formTitle">
-              <Link
-                to="/sign-in"
-               // activeClassName="formTitleLink-active"
-                className="formTitleLink"
-              >
-                Sign In
-              </Link>{" "}
-              or{" "}
-              <Link
-                to="/"
-                //activeClassName="formTitleLink-active"
-                className="formTitleLink"
-              >
-                Sign Up
-              </Link>
-            </div>
-            <Routes>
-                <Route path="/" element={<SignUpForm/>} />
-                <Route path="/sign-in" element={<SignInForm redirectToHome={redirectToHome}/>} />
-            </Routes>
-          </div>
-        </div>}
+        <Routes>
+            <Route exact path="/" element={<SignUpForm/>} />
+            <Route path="/sign-in" element={<SignInForm redirectToHome={redirectToHome}/>} />
+            <Route path="/home" element={<Home/>} />
+        </Routes>
       </Router>
     );
 }

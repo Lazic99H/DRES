@@ -3,11 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import APIServiceSignFrom from './APIServices/APIServiceSignFrom'
 
 function SignInForm (props) {
-      let navigate = useNavigate()
 
       const [mail,setMail] = useState("");
       const [password,setPassword] = useState("");
-      const [navToHome,setNavToHome] = useState(0);
+      const logged_user = sessionStorage.getItem("logged_user");
 
       const handleChange = event => {
         let target = event.target;
@@ -20,14 +19,23 @@ function SignInForm (props) {
             setPassword(value)
       }
 
+
       const handleSubmit = event => {
         event.preventDefault();
         APIServiceSignFrom.SignIn({mail, password})
-          .then(resp => setNavToHome(resp.length))
-          .then(resp => props.redirectToHome(resp))
-          .catch(error => console.log(error))
+        .then(resp => {
+            if(resp.status === 200) return resp.json();
+            else alert("There has been some error with signing in")
+        })
+        .then(resp => {
+             sessionStorage.setItem("logged_user",JSON.stringify(resp[1])),
+             sessionStorage.setItem("token",JSON.stringify(resp[0])),
+             props.redirectToHome(resp[1])})
+        .catch(error => console.log(error))
+        console.log("CONSOLE RADI")
+        console.log(JSON.parse(logged_user))
         console.log("The form was submitted with the following data:");
-       // console.log(this.state);
+
       }
 
     return (
@@ -67,7 +75,6 @@ function SignInForm (props) {
 
           <div className="formField">
             <button
-                onClick ={() => (navToHome > 0 ?  navigate("/home") : navigate("/sign-in"))}
                 className="formFieldButton">
                 Sign In
             </button>

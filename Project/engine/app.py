@@ -3,6 +3,7 @@ from engine.sign import bp_sign
 from database.config import db, ma
 from database.config import CORS
 from model.users import Users, UsersSchema
+from flask_jwt_extended import JWTManager
 
 
 def create_app():
@@ -12,7 +13,9 @@ def create_app():
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/dresdatabase'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False;
+    app.config['JWT_SECRET_KEY'] = "askdjl12k3jl1ejasldkj12lk31j3lkqdjalsk"
 
+    jwt = JWTManager(app)
     db.init_app(app)
     ma.init_app(app)
     return app
