@@ -45,12 +45,53 @@ function SignUpForm (props) {
 
   const handleSubmit = e => {
     e.preventDefault();
+    APIServiceSignFrom.SignIn({name, last_name, address, city, country, phone, mail, password})
+    .then(resp => {
 
+    })
     console.log("The form was submitted with the following data:");
     console.log(mail + password + name);
   }
 
     return (
+     <div className="App">
+          <div className="appAside" />
+          <div className="appForm">
+            <div className="pageSwitcher">
+              <Link
+                to="/sign-in"
+                className="pageSwitcherItem"
+              >
+                Sign In
+              </Link>
+              <Link
+
+                to="/"
+                className="pageSwitcherItem"
+              >
+                Sign Up
+              </Link>
+            </div>
+
+            <div className="formTitle">
+              <Link
+                to="/sign-in"
+                className="formTitleLink"
+              >
+                Sign In
+              </Link>{" "}
+              or{" "}
+              <Link
+
+                to="/"
+                className="formTitleLink"
+              >
+                Sign Up
+              </Link>
+            </div>
+
+
+
       <div className="formCenter">
         <form onSubmit={handleSubmit} className="formFields">
           <div className="formField">
@@ -205,6 +246,12 @@ function SignUpForm (props) {
             </Link>
           </div>
         </form>
+      </div>
+
+
+
+
+      </div>
       </div>
     );
 }

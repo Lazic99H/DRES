@@ -2,11 +2,11 @@ import React, {useState,useEffects } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import APIServiceSignFrom from './APIServices/APIServiceSignFrom'
 
-function SignInForm (props) {
+function SignInForm () {
+      let navigate = useNavigate()
 
       const [mail,setMail] = useState("");
       const [password,setPassword] = useState("");
-      const logged_user = sessionStorage.getItem("logged_user");
 
       const handleChange = event => {
         let target = event.target;
@@ -24,21 +24,61 @@ function SignInForm (props) {
         event.preventDefault();
         APIServiceSignFrom.SignIn({mail, password})
         .then(resp => {
-            if(resp.status === 200) return resp.json();
-            else alert("There has been some error with signing in")
+            console.log(resp)
+            console.log(resp.length)
+            if(resp.user){
+                Object.entries(resp.user[0])
+                .map( ([key, value]) => sessionStorage.setItem(`${key}`,value))
+                sessionStorage.setItem("token",(resp.access_token))
+                navigate("/home")
+            }else{
+                navigate('/sign-in')
+                alert('Wrong email or password!')
+            }
+
         })
-        .then(resp => {
-             sessionStorage.setItem("logged_user",JSON.stringify(resp[1])),
-             sessionStorage.setItem("token",JSON.stringify(resp[0])),
-             props.redirectToHome(resp[1])})
         .catch(error => console.log(error))
-        console.log("CONSOLE RADI")
-        console.log(JSON.parse(logged_user))
         console.log("The form was submitted with the following data:");
 
       }
 
     return (
+    <div className="App">
+          <div className="appAside" />
+          <div className="appForm">
+            <div className="pageSwitcher">
+              <Link
+                to="/sign-in"
+                className="pageSwitcherItem"
+              >
+                Sign In
+              </Link>
+              <Link
+
+                to="/"
+                className="pageSwitcherItem"
+              >
+                Sign Up
+              </Link>
+            </div>
+
+            <div className="formTitle">
+              <Link
+                to="/sign-in"
+                className="formTitleLink"
+              >
+                Sign In
+              </Link>{" "}
+              or{" "}
+              <Link
+
+                to="/"
+                className="formTitleLink"
+              >
+                Sign Up
+              </Link>
+            </div>
+
       <div className="formCenter">
         <form className="formFields" onSubmit={handleSubmit}>
           <div className="formField">
@@ -85,6 +125,9 @@ function SignInForm (props) {
           </div>
 
         </form>
+      </div>
+
+      </div>
       </div>
     );
 }
