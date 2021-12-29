@@ -33,7 +33,7 @@ const Navbar= () =>{
             <li><a href="#">Page 2</a></li>
           </ul>
           <ul className="nav navbar-nav navbar-right">
-            <li><Link to="/profile"><span className="glyphicon glyphicon-user" /> Profile</Link></li>
+            <li><a href="/profile"><span className="glyphicon glyphicon-user" /> Profile</a></li>
             <li onClick={logOut}><Link to="/" ><span className="glyphicon glyphicon-log-out"/> Logout</Link></li>
           </ul>
         </div>
