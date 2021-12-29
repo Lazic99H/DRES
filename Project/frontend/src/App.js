@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Routes, Route, Link, useNavigate} from "react-r
 import SignUpForm from "./components/SignUpForm";
 import SignInForm from "./components/SignInForm";
 import Home from "./components/Home";
+import Navbar from "./components/Navbar";
 import WrongURL from "./components/WrongURL";
 
 import "./App.css";
@@ -16,7 +17,11 @@ const App = (props) => {
                 <Route path="/" element={<SignUpForm/>} />
                 <Route path="/sign-in" element={<SignInForm />} />
             </Route>
-            <Route path="/home" element={<Home/>} />
+            <Route path="/home" element={<>
+                <Navbar/>
+                <Home/>
+                </>
+             }/>
             <Route path="*" element={<WrongURL/>} />
         </Routes>
       </Router>

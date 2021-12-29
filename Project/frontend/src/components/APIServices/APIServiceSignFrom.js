@@ -11,7 +11,7 @@ export default class APIServiceSignFrom {
     }
 
     static SignUp(body){
-        return fetch(`http://127.0.0.1:5000/sign/up`,{
+        return fetch(`http://127.0.0.1:5002/sign/up`,{
           'method': 'POST',
           headers: {
             'Content-Type':'application/json'

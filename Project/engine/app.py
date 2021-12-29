@@ -32,9 +32,9 @@ def main():
     return {'name': "Hello World"}
 
 
-@app.route('/add', methods=['POST'])
+@app.route('/add', methods=['GET'])
 def add_user():
-    first_user = Users.query.get(1)
+    all_users = Users.query.all()
 
     name = request.json['name']
     last_name = request.json['last_name']
@@ -45,16 +45,17 @@ def add_user():
     mail = request.json['mail']
     password = request.json['password']
 
-    new_user = Users(name=name, last_name=last_name, address=address, city=city, country=country, phone=phone, mail=mail, password=password)
+    user_list = users_schema.dump(
+        filter(lambda t: t.mail == mail, all_users)
+    )
+    if user_list:
+        return {"Error": "Email is already registered!"}
+
+    new_user = Users(name=name, last_name=last_name, address=address, city=city,
+                     country=country, phone=phone, mail=mail, password=password)
     db.session.add(new_user)
     db.session.commit()
-    account_id = new_user.account_id
-    all_users = Users.query.all()
-    users = db.session.query(account_id)
-    user_list = users_schema.dump(
-        filter(lambda t: t.account_id == 1, all_users)
-    )
-    return jsonify(user_list)
+    return {"Registered": "You are now registered"}
 
 
 if __name__ == "__main__":

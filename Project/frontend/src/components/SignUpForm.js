@@ -1,8 +1,9 @@
 import React,{ useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import APIServiceSignFrom from './APIServices/APIServiceSignFrom'
 
 function SignUpForm (props) {
+   let navigate = useNavigate()
 
    const [name,setName] = useState("");
    const [last_name,setLastName] = useState("");
@@ -14,9 +15,7 @@ function SignUpForm (props) {
    const [password,setPassword] = useState("");
    const [hasAgreed,setHasAgreed] = useState(false);
 
-  const registerValidation = (props) => {
-        APIServiceSignFrom.SignUp({name,last_name,address,city,country,phone,mail,password})
-  }
+
 
   const handleChange = event => {
     let target = event.target;
@@ -47,10 +46,15 @@ function SignUpForm (props) {
     e.preventDefault();
     APIServiceSignFrom.SignIn({name, last_name, address, city, country, phone, mail, password})
     .then(resp => {
+        if(resp.Error){
+            alert('Email is already registered!')
+        }
+        else{
+            navigate('/sign-in')
+        }
 
     })
     console.log("The form was submitted with the following data:");
-    console.log(mail + password + name);
   }
 
     return (
@@ -240,7 +244,7 @@ function SignUpForm (props) {
           </div>
 
           <div className="formField">
-            <button className="formFieldButton" onClick = {() => registerValidation()}>Sign Up</button>{" "}
+            <button className="formFieldButton" >Sign Up</button>{" "}
             <Link to="/sign-in" className="formFieldLink">
               I'm already member
             </Link>

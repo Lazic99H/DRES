@@ -3,6 +3,8 @@ from model.users import Users, UsersSchema
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+from database.config import db
+
 
 bp_sign = Blueprint('sign', __name__, url_prefix='/sign')
 
@@ -27,6 +29,27 @@ def sign_in():
     return jsonify(the_user)
 
 
-@bp_sign.route('/up', methods=['GET'])
+@bp_sign.route('/up', methods=['POST'])
 def sign_up():
-    return {'signUp': "Signed UP"}
+    all_users = Users.query.all()
+
+    name = request.json['name']
+    last_name = request.json['last_name']
+    address = request.json['address']
+    city = request.json['city']
+    country = request.json['country']
+    phone = request.json['phone']
+    mail = request.json['mail']
+    password = request.json['password']
+
+    user_list = users_schema.dump(
+        filter(lambda t: t.mail == mail, all_users)
+    )
+    if user_list:
+        return {"Error": "Email is already registered!"}
+
+    new_user = Users(name=name, last_name=last_name, address=address, city=city,
+                     country=country, phone=phone, mail=mail, password=password)
+    db.session.add(new_user)
+    db.session.commit()
+    return {"Registered": "You are now registered"}
