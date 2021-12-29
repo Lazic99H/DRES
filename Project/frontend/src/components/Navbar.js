@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from "react-router-dom";
+import Profile from './Profile'
 
 const Navbar= () =>{
   let navigate = useNavigate()
@@ -32,7 +33,7 @@ const Navbar= () =>{
             <li><a href="#">Page 2</a></li>
           </ul>
           <ul className="nav navbar-nav navbar-right">
-            <li><a href="#"><span className="glyphicon glyphicon-user" /> Profile</a></li>
+            <li><Link to="/profile"><span className="glyphicon glyphicon-user" /> Profile</Link></li>
             <li onClick={logOut}><Link to="/" ><span className="glyphicon glyphicon-log-out"/> Logout</Link></li>
           </ul>
         </div>
