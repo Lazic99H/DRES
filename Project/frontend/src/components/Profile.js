@@ -1,9 +1,11 @@
 import React, {useState} from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styling/Profile.css";
 import APIServiceProfileChange from './APIServices/APIServiceProfileChange'
 
 function Profile () {
+    let navigate = useNavigate()
+
     const [account_id,setAccountID] = useState(sessionStorage.getItem("account_id"))
     const [name,setName] = useState(sessionStorage.getItem("name"))
     const [last_name,setLastName] = useState(sessionStorage.getItem("last_name"))
@@ -24,6 +26,28 @@ function Profile () {
             alert("Minimum number of characters in password is 8")
         }else{
             APIServiceProfileChange.ChangeProfile(account_id,{name,last_name,address,city,country,phone,mail,password})
+            .then(resp => {
+                console.log(resp)
+                if(resp.Error){
+                    alert('Email is already registered!')
+                }
+                else{
+                    alert('You updated your profile successfully!')
+                    Object.entries(resp.user[0])
+                    .map( ([key, value]) => sessionStorage.setItem(`${key}`,value))
+                    navigate('/profile')
+                    setName(sessionStorage.getItem("name"))
+                    setLastName(sessionStorage.getItem("last_name"))
+                    setAddress(sessionStorage.getItem("address"))
+                    setCity(sessionStorage.getItem("city"))
+                    setCountry(sessionStorage.getItem("country"))
+                    setPhone(sessionStorage.getItem("phone"))
+                    setMail(sessionStorage.getItem("mail"))
+                    setPassword(sessionStorage.getItem("password"))
+                    setSecondPassword(sessionStorage.getItem("password"))
+                }
+
+            })
         }
     }
 

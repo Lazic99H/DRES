@@ -14,26 +14,18 @@ users_schema = UsersSchema(many=True)
 
 @bp_profile.route('/update/<id>/', methods=['PUT'])
 def update_profile(id):
-    op=Users.query.get(id)
-    print(op)
+
+    old_user = Users.query.get(id)
     all_users = Users.query.all()
-    print(all_users)
     mail = request.json['mail']
 
-    old_user = users_schema.dump(
-        filter(lambda t: round(t.account_id) == id, all_users)
-    )
     print(old_user)
 
-    all_other_users = users_schema.dump(
-        filter(lambda t: t.account_id != id, all_users)
-    )
-
     user_has_same_email = users_schema.dump(
-        filter(lambda t: t.mail == mail, all_other_users)
+        filter(lambda t: (t.account_id != float(id) and t.mail == mail), all_users)
     )
-
-    if(user_has_same_email):
+    print(user_has_same_email)
+    if user_has_same_email:
         return {"Error": "Email is already registered!"}
 
     old_user.name = request.json['name']
@@ -42,7 +34,13 @@ def update_profile(id):
     old_user.city = request.json['city']
     old_user.country = request.json['country']
     old_user.phone = request.json['phone']
+    old_user.mail = request.json['mail']
     old_user.password = request.json['password']
 
+    send_user = users_schema.dump(
+        filter(lambda t: t.account_id == float(id), all_users)
+    )
+
     db.session.commit()
-    return {"Successful": "You updated your profile successfully"}
+    return jsonify(user=send_user)
+
