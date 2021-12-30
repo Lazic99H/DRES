@@ -22,9 +22,10 @@ def sign_in():
     the_user = users_schema.dump(
         filter(lambda t: (t.mail, t.password) == (mail, password), all_users)
     )
+    print(the_user)
     if the_user:
         access_token = create_access_token(identity=mail)
-        return jsonify(access_token=access_token,user=the_user)
+        return jsonify(access_token=access_token, user=the_user)
 
     return jsonify(the_user)
 

@@ -1,5 +1,6 @@
 from flask import Flask, request, json, jsonify
 from engine.sign import bp_sign
+from engine.profile import bp_profile
 from database.config import db, ma
 from database.config import CORS
 from model.users import Users, UsersSchema
@@ -9,6 +10,7 @@ from flask_jwt_extended import JWTManager
 def create_app():
     app = Flask(__name__)
     app.register_blueprint(bp_sign)
+    app.register_blueprint(bp_profile)
     CORS(app)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/dresdatabase'

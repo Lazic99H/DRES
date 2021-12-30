@@ -1,8 +1,10 @@
 import React, {useState} from "react";
 import { Link } from "react-router-dom";
 import "../styling/Profile.css";
+import APIServiceProfileChange from './APIServices/APIServiceProfileChange'
 
 function Profile () {
+    const [account_id,setAccountID] = useState(sessionStorage.getItem("account_id"))
     const [name,setName] = useState(sessionStorage.getItem("name"))
     const [last_name,setLastName] = useState(sessionStorage.getItem("last_name"))
     const [address,setAddress] = useState(sessionStorage.getItem("address"))
@@ -21,10 +23,8 @@ function Profile () {
         else if(password.length < 8){
             alert("Minimum number of characters in password is 8")
         }else{
-            alert("e sad OVDJE PROSLJEDUJEM OVOM DJAVLU")
+            APIServiceProfileChange.ChangeProfile(account_id,{name,last_name,address,city,country,phone,mail,password})
         }
-
-
     }
 
     const handleChange = event => {
