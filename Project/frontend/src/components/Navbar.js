@@ -10,6 +10,9 @@ const Navbar= () =>{
      navigate('/')
   }
 
+  const logIn = () => {
+     navigate('/sign-in')
+  }
   return (
       <div>
         <title>Bootstrap Example</title>
@@ -19,10 +22,11 @@ const Navbar= () =>{
       <nav className="navbar navbar-inverse">
         <div className="container-fluid">
           <div className="navbar-header">
-            <a className="navbar-brand" href="#">Crypto Zimeri</a>
+            <Link className="navbar-brand" to="/welcome-page">Crypto Zimeri</Link>
           </div>
+          {sessionStorage.getItem("account_id") ?
           <ul className="nav navbar-nav">
-            <li className="active"><a href="#">Home</a></li>
+            <li className="active"><Link to="/home">Home</Link></li>
             <li className="dropdown"><a className="dropdown-toggle" data-toggle="dropdown" href="#">Page 1 <span className="caret" /></a>
               <ul className="dropdown-menu">
                 <li><a href="#">Page 1-1</a></li>
@@ -32,10 +36,18 @@ const Navbar= () =>{
             </li>
             <li><a href="#">Page 2</a></li>
           </ul>
+          : ""}
+          {sessionStorage.getItem("account_id") ?
+
           <ul className="nav navbar-nav navbar-right">
             <li><a href="/profile"><span className="glyphicon glyphicon-user" /> Profile</a></li>
             <li onClick={logOut}><Link to="/" ><span className="glyphicon glyphicon-log-out"/> Logout</Link></li>
           </ul>
+          :
+           <ul className="nav navbar-nav navbar-right">
+            <li onClick={logIn}><Link to="/sign-in" ><span className="glyphicon glyphicon-log-in"/> Login</Link></li>
+          </ul>
+          }
         </div>
       </nav>
 
