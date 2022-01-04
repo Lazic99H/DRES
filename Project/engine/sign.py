@@ -1,5 +1,6 @@
 from flask import jsonify, Blueprint, request, json
 from model.users import Users, UsersSchema
+from model.balance import Balance, BalanceSchema
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
@@ -10,6 +11,8 @@ bp_sign = Blueprint('sign', __name__, url_prefix='/sign')
 
 user_schema = UsersSchema
 users_schema = UsersSchema(many=True)
+balance_schema = BalanceSchema
+balances_schema = BalanceSchema(many=True)
 
 
 @bp_sign.route('/in', methods=['POST'])
@@ -53,4 +56,9 @@ def sign_up():
                      country=country, phone=phone, mail=mail, password=password)
     db.session.add(new_user)
     db.session.commit()
+
+    just_added_user = Users.query.get(mail)
+
+    new_balance = Balance(account_id=new_user.account_id, currency="RSD", balance=0)
+
     return {"Registered": "You are now registered"}
