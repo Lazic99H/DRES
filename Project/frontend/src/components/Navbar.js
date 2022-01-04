@@ -20,7 +20,7 @@ const Navbar= () =>{
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
       <nav className="navbar navbar-inverse">
-        <div className="container-fluid">
+        
           <div className="navbar-header">
             <Link className="navbar-brand" to="/welcome-page">Crypto Zimeri</Link>
           </div>
@@ -48,7 +48,7 @@ const Navbar= () =>{
             <li onClick={logIn}><Link to="/sign-in" ><span className="glyphicon glyphicon-log-in"/> Login</Link></li>
           </ul>
           }
-        </div>
+
       </nav>
 
     </div>
