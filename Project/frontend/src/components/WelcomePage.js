@@ -8,6 +8,9 @@ function WelcomePage() {
         <div className="welcome-page-h1">Want to send money in the blink of an eye</div>
         <div className="welcome-page-p">What are you waiting for?</div>
         <div className="hero-btns">
+            {sessionStorage.getItem("account_id") ?
+            ""
+            :
             <Button
                 className='btns'
                 buttonStyle='btn--outline'
@@ -15,6 +18,8 @@ function WelcomePage() {
             >
                 JOIN US
             </Button>
+
+            }
         </div>
     </div>
   );

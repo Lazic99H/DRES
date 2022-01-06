@@ -26,10 +26,13 @@ function SignInForm () {
         .then(resp => {
             console.log(resp)
             console.log(resp.length)
+            console.log(resp.user_balance)
             if(resp.user){
                 Object.entries(resp.user[0])
                 .map( ([key, value]) => sessionStorage.setItem(`${key}`,value))
                 sessionStorage.setItem("token",(resp.access_token))
+                Object.entries(resp.user_balance[0])
+                .map( ([key, value]) => sessionStorage.setItem(`${key}`,value))
                 navigate("/home")
             }else{
                 navigate('/sign-in')
