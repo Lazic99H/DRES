@@ -13,18 +13,20 @@ class History(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
     transaction = db.Column(db.Enum(Transaction), default=Transaction.PENDING)
     transaction_type = db.Column(db.Enum(TransactionType))
+    amount = db.Column(db.Float())
 
-    def __init__(self, account_id, date, transaction, transaction_type):
-        self.account_id = account_id
+    def __init__(self, the_user_account_id, date, transaction, transaction_type, amount):
+        self.the_user_account_id = the_user_account_id
         self.date = date
         self.transaction = transaction
         self.transaction_type = transaction_type
+        self.amount = amount
 
 
 class HistorySchema(Schema):
-    accountId = fields.Number()
+    the_user_account_id = fields.Number()
     date = fields.Date()
     transaction = EnumField(Transaction)
     transaction_type = EnumField(TransactionType)
-
+    amount = fields.Number()
 

@@ -2,6 +2,7 @@ import {BrowserRouter as Router, Routes, Route, Link, useNavigate} from "react-r
 import React from "react";
 import ActionPanel from './HomePanels/ActionPanel'
 import BalancePanel from './HomePanels/BalancePanel'
+import TablePanel from './HomePanels/TablePanel'
 import '../styling/Panels.css'
 
 function Home () {
@@ -14,10 +15,11 @@ function Home () {
         <BalancePanel />
       </div>
       <div className="panel-performance">
-        " "
+        Patrola iza zgrada coskovi rade slsuamo balade dodji u huddi malaaa lud
+        JA sam hasal haslaa ee svetla laseri dizni LAND
       </div>
       <div className="panel-positions">
-        " "
+        <TablePanel/>
       </div>
 </div>
     );

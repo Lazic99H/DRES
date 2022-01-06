@@ -7,18 +7,18 @@ function ActionPanel () {
             <div className="font-weight-bold">{sessionStorage.getItem("name")}</div>
             <div className="text-black-50">{sessionStorage.getItem("mail")}</div>
             <br></br>
+            {sessionStorage.getItem('verification') == 'false' ?
             <div className="mt-5 text-center">
                 <button className="btn btn-primary profile-button" >Verify account</button>
+                <div> <p> </p> </div>
+                <h3> You have to verify your account so that you could perform deposits and withdrawals </h3>
             </div>
-            <br></br>
-            {sessionStorage.getItem('verification') == 'false' ?
+            :
             <div className="mt-5 text-center">
                 <button className="btn btn-success profile-button" >Deposit money</button>
                 <div> <p> </p> </div>
                 <button className="btn btn-success profile-button" >Transfer money</button>
             </div>
-            :
-            <div className="font-weight-bold">First you have to verify your account so that you could perform 'Deposits' and 'Transactions'</div>
             }
         </div>
     );
