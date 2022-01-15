@@ -7,7 +7,6 @@ import Navbar from "./components/Navbar";
 import WrongURL from "./components/WrongURL";
 import Profile from "./components/Profile";
 import WelcomePage from "./components/WelcomePage";
-
 import "./App.css";
 
 const App = (props) => {
