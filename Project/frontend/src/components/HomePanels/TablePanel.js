@@ -1,7 +1,8 @@
 import React, {useState, useMemo , useEffect} from "react";
 import APIServiceUpdateTable from '../APIServices/APIServiceUpdateTable'
-import {useSortBy, useTable} from "react-table"
+import {useGlobalFilter, useSortBy, useTable} from "react-table"
 import "../../styling/TablePanel.css"
+import  { GlobalFilter } from './GlobalFilter'
 
 function TablePanel () {
 
@@ -26,10 +27,20 @@ function TablePanel () {
         columns: historyColumns,
         data: transHistory,
         },
+        useGlobalFilter,
         useSortBy
     );
 
-    const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance;
+    const{
+            getTableProps,
+            getTableBodyProps,
+            headerGroups,
+            rows,
+            prepareRow,
+            preGlobalFilteredRows,
+            setGlobalFilter,
+            state,
+         } = tableInstance;
 
     useEffect( () => {
         APIServiceUpdateTable.UpdateTable(sessionStorage.getItem("account_id")).then(resp => {
@@ -42,7 +53,11 @@ function TablePanel () {
     return (
       <div>
         <h1> Transaction history {history["amount"]} </h1>
-
+        <GlobalFilter
+        preGlobalFilteredRows={preGlobalFilteredRows}
+        setGlobalFilter={setGlobalFilter}
+        globalFilter={state.globalFilter}
+        />
       <table {...getTableProps()}>
         <thead>
             {headerGroups.map(headerGroup => (
