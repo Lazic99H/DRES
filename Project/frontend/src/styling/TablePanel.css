@@ -1,0 +1,28 @@
+h1{
+    text-align: center;
+}
+table{
+    width: 100%;
+    table-layout: fixed;
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+thead{
+    padding: 2px;
+}
+
+tr{
+    padding: 5px;
+    border: solid 1px black;
+}
+
+th{
+    padding: 5px;
+    border: solid 1px black
+}
+
+td{
+    padding: 5px;
+    border: solid 1px black
+}

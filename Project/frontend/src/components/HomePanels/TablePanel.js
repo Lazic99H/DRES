@@ -1,70 +1,57 @@
 import React, {useState, useMemo , useEffect} from "react";
 import APIServiceUpdateTable from '../APIServices/APIServiceUpdateTable'
-import {useTable} from "react-table"
+import {useSortBy, useTable} from "react-table"
+import "../../styling/TablePanel.css"
 
 function TablePanel () {
 
     const [history,setHistory] = useState([])
 
-    const data = useMemo(
-        () => [
-            {
-                "date": "2022-01-06",
-                "transaction": "SUCCESSFUL",
-                "transaction_type": "WITHDRAWAL",
-                "amount": 1
-            },
-            {
-                "date": "2022-01-05",
-                "transaction": "SUCCESSFUL",
-                "transaction_type": "WITHDRAWAL",
-                "amount": 1
-            }
-        ],
-        []
-      );
+     const transHistory = useMemo(() => [...history], [history]);
 
-    const columns = useMemo(() => [
-        {
-            Header: "Date",
-            accessor: "date"
-        },
-        {
-            Header: "Type",
-            accessor: "transaction_type"
-        },
-        {
-            Header: "Amount",
-            accessor: "amount"
-        },
-        {
-            Header: "Status",
-            accessor: "transaction"
-        }
-    ], [])
+        const historyColumns = useMemo(
+        () =>
+          history[0]
+            ? Object.keys(history[0])
+                .filter((key) => key !== "history_id" && key !== "the_user_account_id")
+                .map((key) => {
+                  return { Header: key, accessor: key };
+                })
+            : [],
+        [history]
+        );
 
-    const tableInstance = useTable({columns, data});
+    const tableInstance = useTable(
+        {
+        columns: historyColumns,
+        data: transHistory,
+        },
+        useSortBy
+    );
 
     const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance;
-
-
 
     useEffect( () => {
         APIServiceUpdateTable.UpdateTable(sessionStorage.getItem("account_id")).then(resp => {
             console.log(resp.user_transactions)
-            setHistory(resp.user_transactions[0])
+            setHistory(resp.user_transactions)
         })
     },[])
 
 
     return (
+      <div>
+        <h1> Transaction history {history["amount"]} </h1>
 
       <table {...getTableProps()}>
         <thead>
             {headerGroups.map(headerGroup => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map(column => (
-                  <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                  <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    {column.render('Header')}
+                    {column.isSorted ? (column.isSortedDesc ? "▼" : "▲") : ""}
+                  </th>
                 ))}
               </tr>
             ))}
@@ -82,6 +69,7 @@ function TablePanel () {
         })}
         </tbody>
       </table>
+      </div>
     );
 }
 
