@@ -51,6 +51,10 @@ function Profile () {
         }
     }
 
+    const verifyButton = () => {
+        navigate('/profile/verify')
+    }
+
     const handleChange = event => {
     let target = event.target;
     let value = target.value;
@@ -76,6 +80,7 @@ function Profile () {
         setSecondPassword(value)
   }
 
+
     return (
         <div className="container rounded bg-white mt-5 mb-5">
             <div className="row">
@@ -86,7 +91,7 @@ function Profile () {
                         <div className="text-black-50">{sessionStorage.getItem("mail")}</div>
                         <br></br>
                         <div className="mt-5 text-center">
-                                <button className="btn btn-primary profile-button" >Verify account</button>
+                                <button onClick={verifyButton} className="btn btn-primary profile-button" >Verify account</button>
                         </div>
                     </div>
                 </div>

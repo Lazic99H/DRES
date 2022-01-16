@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import WrongURL from "./components/WrongURL";
 import Profile from "./components/Profile";
 import WelcomePage from "./components/WelcomePage";
+import WrapCard from "./components/Transactions/WrapCard";
 import "./App.css";
 
 const App = (props) => {
@@ -25,7 +26,7 @@ const App = (props) => {
             <Route>
                 <Route path="/home" element={ <Home/>}/>
                 <Route path="/profile" element={<Profile/>}/>
-                <Route path="/profile/verify" />
+                <Route path="/profile/verify" element={<WrapCard/>}/>
             </Route>
             <Route path="*" element={<WrongURL/>} />
         </Routes>

@@ -1,6 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function ActionPanel () {
+    let navigate = useNavigate()
+
+    const verifyButton = () => {
+        navigate('/profile/verify')
+    }
+
     return (
         <div className="d-flex flex-column align-items-center text-center p-3 py-5">
             <img className="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"/>
@@ -9,7 +16,7 @@ function ActionPanel () {
             <br></br>
             {sessionStorage.getItem('verification') == 'false' ?
             <div className="mt-5 text-center">
-                <button className="btn btn-primary profile-button" >Verify account</button>
+                <button onClick={verifyButton} className="btn btn-primary profile-button" >Verify account</button>
                 <div> <p> </p> </div>
                 <h3> You have to verify your account so that you could perform deposits and withdrawals </h3>
             </div>
