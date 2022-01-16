@@ -25,6 +25,7 @@ const App = (props) => {
             <Route>
                 <Route path="/home" element={ <Home/>}/>
                 <Route path="/profile" element={<Profile/>}/>
+                <Route path="/profile/verify" />
             </Route>
             <Route path="*" element={<WrongURL/>} />
         </Routes>
