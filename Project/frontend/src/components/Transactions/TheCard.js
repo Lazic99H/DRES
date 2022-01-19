@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -31,6 +32,7 @@ const useStyles = makeStyles({
 });
 
 function TheCard() {
+  let navigate = useNavigate()
   const classes = useStyles();
   // State
   const [mail, setMail] = useState('');
@@ -39,38 +41,47 @@ function TheCard() {
   const elements = useElements();
 
   const handleSubmitVerify = async (event) => {
-    if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
-      return;
+    if (sessionStorage.getItem('mail') === mail && sessionStorage.getItem('verification') === 'false'){
+        if (!stripe || !elements) {
+          // Stripe.js has not yet loaded.
+          // Make sure to disable form submission until Stripe.js has loaded.
+          return;
+        }
+
+        const res = await axios.post('http://localhost:5002/bank/verify', {mail: mail});
+
+        const clientSecret = res.data['client_secret'];
+
+        const result = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: elements.getElement(CardElement),
+            billing_details: {
+              email: mail,
+            },
+          },
+        });
+
+        if (result.error) {
+          // Show error to your customer (e.g., insufficient funds)
+          console.log(result.error.message);
+        } else {
+          // The payment has been processed!
+          if (result.paymentIntent.status === 'succeeded') {
+            // Show a success message to your customer
+            // There's a risk of the customer closing the window before callback
+            // execution. Set up a webhook or plugin to listen for the
+            // payment_intent.succeeded event that handles any business critical
+            // post-payment actions.
+            sessionStorage.setItem('verification','true')
+          }
+        }
     }
-
-    const res = await axios.post('http://localhost:5002/bank/verify', {mail: mail});
-
-    const clientSecret = res.data['client_secret'];
-
-    const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-        billing_details: {
-          email: mail,
-        },
-      },
-    });
-
-    if (result.error) {
-      // Show error to your customer (e.g., insufficient funds)
-      console.log(result.error.message);
-    } else {
-      // The payment has been processed!
-      if (result.paymentIntent.status === 'succeeded') {
-        // Show a success message to your customer
-        // There's a risk of the customer closing the window before callback
-        // execution. Set up a webhook or plugin to listen for the
-        // payment_intent.succeeded event that handles any business critical
-        // post-payment actions.
-        console.log('You got 500$!');
-      }
+    else if (sessionStorage.getItem('verification') === 'true'){
+        navigate('/profile')
+        alert('You are already verified')
+    }
+    else{
+        alert('Email doesnt match your profile email!')
     }
   };
 

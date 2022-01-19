@@ -90,9 +90,14 @@ function Profile () {
                         <div className="font-weight-bold">{sessionStorage.getItem("name")}</div>
                         <div className="text-black-50">{sessionStorage.getItem("mail")}</div>
                         <br></br>
+                        {sessionStorage.getItem('verification') == 'false' ?
                         <div className="mt-5 text-center">
                                 <button onClick={verifyButton} className="btn btn-primary profile-button" >Verify account</button>
                         </div>
+                        :
+                        ""
+                        }
+
                     </div>
                 </div>
                 <div className="col-md-6 border-right">

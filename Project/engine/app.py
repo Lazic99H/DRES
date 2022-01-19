@@ -11,11 +11,11 @@ from flask_jwt_extended import JWTManager
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
     app.register_blueprint(bp_sign)
     app.register_blueprint(bp_profile)
     app.register_blueprint(bp_table)
     app.register_blueprint(bp_bank)
-    CORS(app)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/dresdatabase'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False;

@@ -1,5 +1,9 @@
 from flask import jsonify, Blueprint, request, json
 from model.users import Users, UsersSchema
+from model.balance import Balance, BalanceSchema
+from model.history import History, HistorySchema
+from model.transaction import Transaction
+from model.transaction_type import TransactionType
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
@@ -11,47 +15,57 @@ bp_bank = Blueprint('bank', __name__, url_prefix='/bank')
 
 user_schema = UsersSchema
 users_schema = UsersSchema(many=True)
+balance_schema = BalanceSchema
+balances_schema = BalanceSchema(many=True)
+history_schema = HistorySchema
+historys_schema = HistorySchema(many=True)
 
 
-@bp_bank.route('/bank/verify', methods=['POST'])
+@bp_bank.route('/verify', methods=['POST'])
 def verify_profile():
     email = request.json['mail']
-
     if not email:
         return "You need to send an email", 400
 
     intent = stripe.PaymentIntent.create(
-        amount=103.01,
+        amount=10300,
         currency='rsd',
         receipt_email=email
     )
 
-    old_user = Users.query.get(id)
-    all_users = Users.query.all()
-    mail = request.json['mail']
+    return {"client_secret": intent['client_secret']}, 200
 
-    print(old_user)
 
-    user_has_same_email = users_schema.dump(
-        filter(lambda t: (t.account_id != float(id) and t.mail == mail), all_users)
-    )
-    print(user_has_same_email)
-    if user_has_same_email:
-        return {"Error": "Email is already registered!"}
+@bp_bank.route('/update', methods=['POST'])
+def webhook():
+    event = request.get_json()
 
-    old_user.name = request.json['name']
-    old_user.last_name = request.json['last_name']
-    old_user.address = request.json['address']
-    old_user.city = request.json['city']
-    old_user.country = request.json['country']
-    old_user.phone = request.json['phone']
-    old_user.mail = request.json['mail']
-    old_user.password = request.json['password']
+    if event['type'] == 'payment_intent.succeeded':
+        mail = event["data"]["object"]["receipt_email"]
+        amount = event["data"]["object"]["amount"]/100
+        currency = event["data"]["object"]["currency"]
 
-    send_user = users_schema.dump(
-        filter(lambda t: t.account_id == float(id), all_users)
-    )
+        all_users = Users.query.all()
+        the_user = users_schema.dump(
+            filter(lambda t: t.mail == mail, all_users)
+        )
+        user_id = the_user[0]["account_id"]
+        current_user = Users.query.get(user_id)
+        current_user.verification = True
+        history = History(the_user_account_id=user_id,
+                          transaction=Transaction.SUCCESSFUL,
+                          transaction_type=TransactionType.DEPOSIT,
+                          amount=amount)
+        db.session.add(history)
+        db.session.commit()
+        history = History(the_user_account_id=user_id,
+                          transaction=Transaction.SUCCESSFUL,
+                          transaction_type=TransactionType.WITHDRAWAL,
+                          amount=amount)
+        db.session.add(history)
+        db.session.commit()
 
-    db.session.commit()
-    return jsonify(user=send_user)
+    else:
+        return 'Unexpected event type', 400
 
+    return '', 200
