@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styling/Profile.css";
 import APIServiceProfileChange from './APIServices/APIServiceProfileChange'
-
+import logo from '../images/verified_logo.png'
 function Profile () {
     let navigate = useNavigate()
 
@@ -95,7 +95,9 @@ function Profile () {
                                 <button onClick={verifyButton} className="btn btn-primary profile-button" >Verify account</button>
                         </div>
                         :
-                        ""
+                        <div>
+                            <img className="rounded-circle mt-5" width="50px" src={logo}/>
+                        </div>
                         }
 
                     </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import logo from '../../images/verified_logo.png'
 
 function ActionPanel () {
     let navigate = useNavigate()
@@ -17,11 +18,12 @@ function ActionPanel () {
             {sessionStorage.getItem('verification') == 'false' ?
             <div className="mt-5 text-center">
                 <button onClick={verifyButton} className="btn btn-primary profile-button" >Verify account</button>
-                <div> <p> </p> </div>
-                <h3> You have to verify your account so that you could perform deposits and withdrawals </h3>
+
             </div>
             :
             <div className="mt-5 text-center">
+                 <img className="rounded-circle mt-5" width="50px" src={logo}/>
+                  <div> <p> </p> </div>
                 <button className="btn btn-success profile-button" >Deposit money</button>
                 <div> <p> </p> </div>
                 <button className="btn btn-success profile-button" >Transfer money</button>
