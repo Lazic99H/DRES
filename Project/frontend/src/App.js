@@ -8,8 +8,9 @@ import WrongURL from "./components/WrongURL";
 import Profile from "./components/Profile";
 import WelcomePage from "./components/WelcomePage";
 import WrapCard from "./components/Transactions/WrapCard";
-import "./App.css";
+import WrapDepositCard from "./components/Transactions/WrapDepositCard";
 
+import "./App.css";
 const App = (props) => {
 
     return (
@@ -27,6 +28,7 @@ const App = (props) => {
                 <Route path="/home" element={ <Home/>}/>
                 <Route path="/profile" element={<Profile/>}/>
                 <Route path="/profile/verify" element={<WrapCard/>}/>
+                <Route path="/profile/deposit" element={<WrapDepositCard/>}/>
             </Route>
             <Route path="*" element={<WrongURL/>} />
         </Routes>

@@ -8,7 +8,7 @@ import TextField from '@material-ui/core/TextField';
 import {makeStyles} from '@material-ui/core/styles';
 import CardInput from './CardInput';
 import {useStripe, useElements, CardElement} from '@stripe/react-stripe-js';
-
+import {NumberField} from '@adobe/react-spectrum'
 
 const useStyles = makeStyles({
   root: {
@@ -31,24 +31,28 @@ const useStyles = makeStyles({
   },
 });
 
-function TheCard() {
+function DepositCard() {
   let navigate = useNavigate()
   const classes = useStyles();
   // State
   const [mail, setMail] = useState('');
+  const [amount, setAmount] = useState(100);
+  const [currency, setCurrency] = useState('')
 
   const stripe = useStripe();
   const elements = useElements();
 
-  const handleSubmitVerify = async (event) => {
-    if (sessionStorage.getItem('mail') === mail && sessionStorage.getItem('verification') === 'false'){
+  const handleSubmitDeposit = async (event) => {
+    if (sessionStorage.getItem('mail') === mail && sessionStorage.getItem('verification') === 'true'){
         if (!stripe || !elements) {
           // Stripe.js has not yet loaded.
           // Make sure to disable form submission until Stripe.js has loaded.
           return;
         }
 
-        const res = await axios.post('http://localhost:5002/bank/verify', {mail: mail});
+        setCurrency(sessionStorage.getItem("currency"))
+
+        const res = await axios.post('http://localhost:5002/bank/verify', {mail: mail, amount: amount});
 
         const clientSecret = res.data['client_secret'];
 
@@ -63,7 +67,7 @@ function TheCard() {
 
         if (result.error) {
           // Show error to your customer (e.g., insufficient funds)
-          alert(result.error.message);
+          console.log(result.error.message);
         } else {
           // The payment has been processed!
           if (result.paymentIntent.status === 'succeeded') {
@@ -76,9 +80,9 @@ function TheCard() {
           }
         }
     }
-    else if (sessionStorage.getItem('verification') === 'true'){
+    else if (sessionStorage.getItem('verification') === 'false'){
         navigate('/profile')
-        alert('You are already verified')
+        alert('You are not verified!')
     }
     else{
         alert('Email doesnt match your profile email!')
@@ -101,9 +105,18 @@ function TheCard() {
           onChange={(e) => setMail(e.target.value)}
           fullWidth
         />
+        <NumberField
+          label="Transaction amount"
+          defaultValue={45}
+          formatOptions={{
+            style: 'currency',
+            currency: 'EUR',
+            currencyDisplay: 'code',
+            currencySign: 'accounting'
+          }} />
         <CardInput />
         <div className={classes.div}>
-          <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmitVerify}>
+          <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmitDeposit}>
             Verify
           </Button>
         </div>
@@ -112,4 +125,4 @@ function TheCard() {
   );
 }
 
-export default TheCard;
+export default DepositCard;
