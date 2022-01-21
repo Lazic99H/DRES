@@ -13,7 +13,6 @@ history_schema = HistorySchema(many=True)
 
 @bp_table.route('/update/<id>/', methods=['POST'])
 def update_table(id):
-    print(id)
     all_transactions = History.query.all()
     user_transactions = history_schema.dump(
         filter(lambda t: t.the_user_account_id == float(id), all_transactions)

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
@@ -8,6 +8,7 @@ import TextField from '@material-ui/core/TextField';
 import {makeStyles} from '@material-ui/core/styles';
 import CardInput from './CardInput';
 import {useStripe, useElements, CardElement} from '@stripe/react-stripe-js';
+import APIServiceUpdateBalance from '../APIServices/APIServiceUpdateBalance'
 
 const useStyles = makeStyles({
   root: {
@@ -36,7 +37,8 @@ function DepositCard() {
   // State
   const [mail, setMail] = useState('');
   const [amount, setAmount] = useState(10);
-  const [currency, setCurrency] = useState('')
+  const [currency, setCurrency] = useState(sessionStorage.getItem("currency"))
+  const [balance_id,setBalanceID] = useState(sessionStorage.getItem("balance_id"))
 
   const stripe = useStripe();
   const elements = useElements();
@@ -48,8 +50,6 @@ function DepositCard() {
           // Make sure to disable form submission until Stripe.js has loaded.
           return;
         }
-
-        setCurrency(sessionStorage.getItem("currency"))
 
         const res = await axios.post('http://localhost:5002/bank/deposit', {mail: mail, amount: amount, currency: currency});
 
@@ -75,6 +75,9 @@ function DepositCard() {
             // execution. Set up a webhook or plugin to listen for the
             // payment_intent.succeeded event that handles any business critical
             // post-payment actions.
+            //UPDATE BALANCE OVDJE
+            //APIServiceUpdateBalance
+
           }
         }
     }
@@ -121,7 +124,7 @@ function DepositCard() {
         <CardInput />
         <div className={classes.div}>
           <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmitDeposit}>
-            Verify
+            Deposit
           </Button>
         </div>
       </CardContent>

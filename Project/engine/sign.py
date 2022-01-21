@@ -22,7 +22,6 @@ def sign_in():
     print(all_balances)
     mail = request.json['mail']
     password = request.json['password']
-
     the_user = users_schema.dump(
         filter(lambda t: (t.mail, t.password) == (mail, password), all_users)
     )
