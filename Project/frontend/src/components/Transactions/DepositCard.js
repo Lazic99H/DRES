@@ -8,7 +8,6 @@ import TextField from '@material-ui/core/TextField';
 import {makeStyles} from '@material-ui/core/styles';
 import CardInput from './CardInput';
 import {useStripe, useElements, CardElement} from '@stripe/react-stripe-js';
-import {NumberField} from '@adobe/react-spectrum'
 
 const useStyles = makeStyles({
   root: {
@@ -36,14 +35,14 @@ function DepositCard() {
   const classes = useStyles();
   // State
   const [mail, setMail] = useState('');
-  const [amount, setAmount] = useState(100);
+  const [amount, setAmount] = useState(10);
   const [currency, setCurrency] = useState('')
 
   const stripe = useStripe();
   const elements = useElements();
 
   const handleSubmitDeposit = async (event) => {
-    if (sessionStorage.getItem('mail') === mail && sessionStorage.getItem('verification') === 'true'){
+    if (sessionStorage.getItem('mail') === mail && sessionStorage.getItem('verification') === 'true' && (amount > 0 || amount < 100000)){
         if (!stripe || !elements) {
           // Stripe.js has not yet loaded.
           // Make sure to disable form submission until Stripe.js has loaded.
@@ -52,7 +51,7 @@ function DepositCard() {
 
         setCurrency(sessionStorage.getItem("currency"))
 
-        const res = await axios.post('http://localhost:5002/bank/verify', {mail: mail, amount: amount});
+        const res = await axios.post('http://localhost:5002/bank/deposit', {mail: mail, amount: amount, currency: currency});
 
         const clientSecret = res.data['client_secret'];
 
@@ -67,7 +66,7 @@ function DepositCard() {
 
         if (result.error) {
           // Show error to your customer (e.g., insufficient funds)
-          console.log(result.error.message);
+          alert(result.error.message);
         } else {
           // The payment has been processed!
           if (result.paymentIntent.status === 'succeeded') {
@@ -76,13 +75,15 @@ function DepositCard() {
             // execution. Set up a webhook or plugin to listen for the
             // payment_intent.succeeded event that handles any business critical
             // post-payment actions.
-            sessionStorage.setItem('verification','true')
           }
         }
     }
     else if (sessionStorage.getItem('verification') === 'false'){
         navigate('/profile')
         alert('You are not verified!')
+    }
+    else if (amount < 1 || amount > 99999){
+        alert('Amount has to be more then 1 and lower then 99999!')
     }
     else{
         alert('Email doesnt match your profile email!')
@@ -105,15 +106,18 @@ function DepositCard() {
           onChange={(e) => setMail(e.target.value)}
           fullWidth
         />
-        <NumberField
-          label="Transaction amount"
-          defaultValue={45}
-          formatOptions={{
-            style: 'currency',
-            currency: 'EUR',
-            currencyDisplay: 'code',
-            currencySign: 'accounting'
-          }} />
+        <TextField
+          label='Amount'
+          id='outlined-basic'
+          helperText={`Amount of money you want to deposit`}
+          margin='normal'
+          variant='outlined'
+          type='number'
+          required
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          fullWidth
+        />
         <CardInput />
         <div className={classes.div}>
           <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmitDeposit}>

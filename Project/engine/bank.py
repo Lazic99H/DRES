@@ -44,28 +44,55 @@ def webhook():
         mail = event["data"]["object"]["receipt_email"]
         amount = event["data"]["object"]["amount"]/100
         currency = event["data"]["object"]["currency"]
+        transaction_type = event["data"]["object"]["calculated_statement_descriptor"]
 
-        all_users = Users.query.all()
-        the_user = users_schema.dump(
-            filter(lambda t: t.mail == mail, all_users)
-        )
-        user_id = the_user[0]["account_id"]
-        current_user = Users.query.get(user_id)
-        current_user.verification = True
-        history = History(the_user_account_id=user_id,
-                          transaction=Transaction.SUCCESSFUL,
-                          transaction_type=TransactionType.DEPOSIT,
-                          amount=amount)
-        db.session.add(history)
-        db.session.commit()
-        history = History(the_user_account_id=user_id,
-                          transaction=Transaction.SUCCESSFUL,
-                          transaction_type=TransactionType.WITHDRAWAL,
-                          amount=amount)
-        db.session.add(history)
-        db.session.commit()
+        if transaction_type == 'DEPOSIT':
+            print('DEPOSIT')
+        elif transaction_type == 'WITHDRAW':
+            print('WITHDRAW')
+        else:
+            all_users = Users.query.all()
+            the_user = users_schema.dump(
+                filter(lambda t: t.mail == mail, all_users)
+            )
+            user_id = the_user[0]["account_id"]
+            current_user = Users.query.get(user_id)
+            current_user.verification = True
+            history = History(the_user_account_id=user_id,
+                              transaction=Transaction.SUCCESSFUL,
+                              transaction_type=TransactionType.DEPOSIT,
+                              amount=amount)
+            db.session.add(history)
+            db.session.commit()
+            history = History(the_user_account_id=user_id,
+                              transaction=Transaction.SUCCESSFUL,
+                              transaction_type=TransactionType.WITHDRAWAL,
+                              amount=amount)
+            db.session.add(history)
+            db.session.commit()
 
     else:
         return 'Unexpected event type', 400
 
     return '', 200
+
+
+@bp_bank.route('/deposit', methods=['POST'])
+def deposit_money():
+    email = request.json['mail']
+    amount = request.json['amount']
+    currency = request.json['currency']
+
+    converted_amount = int(amount)
+
+    if not email:
+        return "You need to send an email", 400
+
+    intent = stripe.PaymentIntent.create(
+        amount=(converted_amount*100),
+        currency=currency.lower(),
+        receipt_email=email,
+        statement_descriptor='deposit'
+    )
+
+    return {"client_secret": intent['client_secret']}, 200
