@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import logo from '../../images/verified_logo.png'
+import { GoVerified } from 'react-icons/go';
+import { GoUnverified } from 'react-icons/go';
+
 
 function ActionPanel () {
     let navigate = useNavigate()
@@ -22,12 +24,12 @@ function ActionPanel () {
             <br></br>
             {sessionStorage.getItem('verification') == 'false' ?
             <div className="mt-5 text-center">
+                <GoUnverified/>
                 <button onClick={verifyButton} className="btn btn-primary profile-button" >Verify account</button>
-
             </div>
             :
             <div className="mt-5 text-center">
-                 <img className="rounded-circle mt-5" width="50px" src={logo}/>
+                 <GoVerified/>
                   <div> <p> </p> </div>
                 <button onClick={depositButton} className="btn btn-success profile-button" >Deposit money</button>
                 <div> <p> </p> </div>
