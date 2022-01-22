@@ -28,8 +28,8 @@ def verify_profile():
         return "You need to send an email", 400
 
     intent = stripe.PaymentIntent.create(
-        amount=10300,
-        currency='rsd',
+        amount=100,
+        currency='usd',
         receipt_email=email
     )
 
