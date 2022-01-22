@@ -26,5 +26,6 @@ class HistorySchema(Schema):
     the_user_account_id = fields.Number()
     transaction = EnumField(Transaction)
     transaction_type = EnumField(TransactionType)
+    date = fields.DateTime()
     amount = fields.Number()
 

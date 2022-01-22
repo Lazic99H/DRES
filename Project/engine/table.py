@@ -17,6 +17,6 @@ def update_table(id):
     user_transactions = history_schema.dump(
         filter(lambda t: t.the_user_account_id == float(id), all_transactions)
     )
-
+    print(user_transactions)
     return jsonify(user_transactions=user_transactions)
 

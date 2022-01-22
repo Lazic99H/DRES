@@ -9,6 +9,8 @@ import Profile from "./components/Profile";
 import WelcomePage from "./components/WelcomePage";
 import WrapCard from "./components/Transactions/WrapCard";
 import WrapDepositCard from "./components/Transactions/WrapDepositCard";
+import WrapTransferCard from "./components/Transactions/WrapTransferCard";
+
 
 import "./App.css";
 const App = (props) => {
@@ -29,6 +31,7 @@ const App = (props) => {
                 <Route path="/profile" element={<Profile/>}/>
                 <Route path="/profile/verify" element={<WrapCard/>}/>
                 <Route path="/profile/deposit" element={<WrapDepositCard/>}/>
+                <Route path="/profile/transfer" element={<WrapTransferCard/>}/>
             </Route>
             <Route path="*" element={<WrongURL/>} />
         </Routes>

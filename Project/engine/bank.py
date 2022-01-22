@@ -52,7 +52,7 @@ def update_database():
         )
         user_id = the_user[0]["account_id"]
 
-        if transaction_type == 'deposit':
+        if transaction_type == 'DEPOSIT':
             all_balances = Balance.query.all()
 
             user_balance = balances_schema.dump(
@@ -103,16 +103,15 @@ def deposit_money():
     converted_amount = (int(amount) * 100)
     print(lower)
     print(converted_amount)
+
     if not email:
         return "You need to send an email", 400
-    print(currency)
-    print('OVDE SAM')
-    print(currency)
+
     intent = stripe.PaymentIntent.create(
         amount=converted_amount,
         currency=lower,
         receipt_email=email,
-        statement_descriptor='deposit'
+        statement_descriptor='DEPOSIT'
     )
 
     return {"client_secret": intent['client_secret']}, 200
@@ -126,3 +125,63 @@ def update_balance(id):
                 filter(lambda t: t.balance_id == float(id), all_balances)
             )
     return jsonify(user_balance=balance), 200
+
+
+@bp_bank.route('/transfer', methods=['POST'])
+def transfer_money():
+    email = request.json['mail']
+    amount = request.json['amount']
+    currency = request.json['currency']
+    balance_id = request.json['balance_id']
+
+    lower = currency.lower()
+    converted_amount = (int(amount) * 100)
+
+    balances = Balance.query.all()
+    user_balance = balances_schema.dump(
+        filter(lambda t: t.balance_id == float(balance_id), balances)
+    )
+
+    history = History(the_user_account_id=user_balance[0]["user_account_id"],
+                      transaction=Transaction.PENDING,
+                      transaction_type=TransactionType.WITHDRAWAL,
+                      amount=amount)
+    db.session.add(history)
+    db.session.commit()
+
+    #OVDJE TREBA SPAVANJE
+
+    if user_balance[0]["balance"] < float(amount):
+        the_transaction = History.query.get(history.history_id)
+        the_transaction.transaction = Transaction.DENIED
+        db.session.commit()
+        return "Not enough money to preform this transaction", 400
+
+    if not email:
+        intent = stripe.PaymentIntent.create(
+            amount=converted_amount,
+            currency=lower,
+            statement_descriptor='WITHDRAW',
+            description=history.history_id
+        )
+
+    all_users = Users.query.all()
+    the_user = users_schema.dump(
+        filter(lambda t: t.mail == email, all_users)
+    )
+    if the_user:
+        intent = stripe.PaymentIntent.create(
+            amount=converted_amount,
+            currency=lower,
+            receipt_email=email,
+            statement_descriptor='WITHDRAW',
+            description=history.history_id
+        )
+
+    else:
+        the_transaction = History.query.get(history.history_id)
+        the_transaction.transaction = Transaction.DENIED
+        db.session.commit()
+        return "Email dose not exist", 400
+
+    return {"client_secret": intent['client_secret']}, 200
