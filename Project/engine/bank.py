@@ -45,12 +45,17 @@ def update_database():
         amount = event["data"]["object"]["amount"]/100
         currency = event["data"]["object"]["currency"]
         transaction_type = event["data"]["object"]["statement_descriptor"]
+        description = event["data"]["object"]["description"]
 
         all_users = Users.query.all()
         the_user = users_schema.dump(
             filter(lambda t: t.mail == mail, all_users)
         )
-        user_id = the_user[0]["account_id"]
+
+        user_id = -1;
+
+        if the_user:
+            user_id = the_user[0]["account_id"]
 
         if transaction_type == 'DEPOSIT':
             all_balances = Balance.query.all()
@@ -70,7 +75,35 @@ def update_database():
             db.session.commit()
 
         elif transaction_type == 'WITHDRAW':
-            print('WITHDRAW')
+            the_transaction = History.query.get(float(description))
+            the_transaction.transaction = Transaction.SUCCESSFUL
+            db.session.commit()
+
+            withdraw_user = Users.query.get(the_transaction.the_user_account_id)
+
+            all_balances = Balance.query.all()
+            the_wanted_balance_id = balances_schema.dump(
+             filter(lambda t: t.user_account_id == float(withdraw_user.account_id), all_balances)
+            )
+
+            user_balance = Balance.query.get(the_wanted_balance_id[0]["balance_id"])
+            user_balance.balance -= float(amount)
+            db.session.commit()
+
+            if mail:
+                user_balance = balances_schema.dump(
+                    filter(lambda t: t.user_account_id == float(user_id), all_balances)
+                )
+                the_user_balance = Balance.query.get(user_balance[0]["balance_id"])
+                the_user_balance.balance += amount
+                db.session.commit()
+                user_that_gets_the_money = History(the_user_account_id=user_id,
+                                                   transaction=Transaction.SUCCESSFUL,
+                                                   transaction_type=TransactionType.DEPOSIT,
+                                                   amount=amount)
+
+                db.session.add(user_that_gets_the_money)
+                db.session.commit()
 
         else:
             current_user = Users.query.get(user_id)
@@ -155,7 +188,7 @@ def transfer_money():
         the_transaction = History.query.get(history.history_id)
         the_transaction.transaction = Transaction.DENIED
         db.session.commit()
-        return "Not enough money to preform this transaction", 400
+        return "Not enough money to preform this transaction", 401
 
     if not email:
         intent = stripe.PaymentIntent.create(
@@ -164,6 +197,7 @@ def transfer_money():
             statement_descriptor='WITHDRAW',
             description=history.history_id
         )
+        return {"client_secret": intent['client_secret']}, 200
 
     all_users = Users.query.all()
     the_user = users_schema.dump(
