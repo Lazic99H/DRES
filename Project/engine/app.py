@@ -7,7 +7,7 @@ from database.config import db, ma
 from database.config import CORS
 from model.users import Users, UsersSchema
 from flask_jwt_extended import JWTManager
-
+from concurrent.futures import ThreadPoolExecutor
 
 def create_app():
     app = Flask(__name__)

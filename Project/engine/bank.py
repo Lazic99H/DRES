@@ -8,6 +8,7 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 import stripe
+import time
 from database.config import db
 
 stripe.api_key = "sk_test_51KCTtTEVTmWxmcOS0wB3u8YGu3ZNmDR1pjCdur8wymqDzIXXMcyvVrQfeo23SWNhd23rJrE7ZL2pVXzkGtY4reby0001A4d8zs"
@@ -140,9 +141,10 @@ def deposit_money():
     if not email:
         return "You need to send an email", 400
 
+    #NAPISANO JE DA U DINARIMA SE VRSE UPLATE
     intent = stripe.PaymentIntent.create(
         amount=converted_amount,
-        currency=lower,
+        currency='rsd',
         receipt_email=email,
         statement_descriptor='DEPOSIT'
     )
@@ -183,7 +185,9 @@ def transfer_money():
     db.session.commit()
 
     #OVDJE TREBA SPAVANJE
-
+    print("NA SPAVANJE")
+    time.sleep(5.0)
+    print("NA BUDJENJE")
     if user_balance[0]["balance"] < float(amount):
         the_transaction = History.query.get(history.history_id)
         the_transaction.transaction = Transaction.DENIED
