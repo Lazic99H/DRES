@@ -15,6 +15,21 @@
   grid-column: span 2;
 }
 
+.panel-converter{
+    background-color: #161616;
+    color: #ddd;
+    padding: 10px;
+
+    h1{
+        color: #eef;
+        text-align: center;
+    }
+
+    button{
+        align: center;
+    }
+}
+
 media (max-width: 750px) {
   .panels {
     grid-template-columns: 225px auto;
