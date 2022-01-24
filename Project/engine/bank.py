@@ -62,7 +62,7 @@ def update_database():
             all_balances = Balance.query.all()
 
             user_balance = balances_schema.dump(
-                filter(lambda t: t.user_account_id == float(user_id), all_balances)
+                filter(lambda t: (t.user_account_id, t.currency) == (float(user_id),"RSD"), all_balances)
             )
             the_user_balance = Balance.query.get(user_balance[0]["balance_id"])
             the_user_balance.balance += amount
@@ -84,7 +84,7 @@ def update_database():
 
             all_balances = Balance.query.all()
             the_wanted_balance_id = balances_schema.dump(
-             filter(lambda t: t.user_account_id == float(withdraw_user.account_id), all_balances)
+             filter(lambda t: (t.user_account_id, t.currency) == (float(withdraw_user.account_id), 'RSD'), all_balances)
             )
 
             user_balance = Balance.query.get(the_wanted_balance_id[0]["balance_id"])
@@ -93,7 +93,7 @@ def update_database():
 
             if mail:
                 user_balance = balances_schema.dump(
-                    filter(lambda t: t.user_account_id == float(user_id), all_balances)
+                    filter(lambda t: (t.user_account_id, t.currency) == (float(user_id), 'RSD'), all_balances)
                 )
                 the_user_balance = Balance.query.get(user_balance[0]["balance_id"])
                 the_user_balance.balance += amount
@@ -162,6 +162,17 @@ def update_balance(id):
     return jsonify(user_balance=balance), 200
 
 
+@bp_bank.route('/update/balances/<id>/', methods=['POST'])
+def update_balances(id):
+    all_balances = Balance.query.all()
+
+    other_balances = balances_schema.dump(
+        filter(lambda t: (t.user_account_id == float(id)) & (t.currency != 'RSD'), all_balances)
+    )
+    print(other_balances)
+    return jsonify(other_balances=other_balances)
+
+
 @bp_bank.route('/transfer', methods=['POST'])
 def transfer_money():
     email = request.json['mail']
@@ -186,7 +197,6 @@ def transfer_money():
 
     #OVDJE TREBA SPAVANJE
     print("NA SPAVANJE")
-    time.sleep(5.0)
     print("NA BUDJENJE")
     if user_balance[0]["balance"] < float(amount):
         the_transaction = History.query.get(history.history_id)
@@ -196,7 +206,7 @@ def transfer_money():
 
     if not email:
         intent = stripe.PaymentIntent.create(
-            amount=converted_amount,
+            amount=int(converted_amount),
             currency=lower,
             statement_descriptor='WITHDRAW',
             description=history.history_id
@@ -223,3 +233,46 @@ def transfer_money():
         return "Email dose not exist", 400
 
     return {"client_secret": intent['client_secret']}, 200
+
+
+@bp_bank.route('/update/converter/<id>/', methods=['PUT'])
+def update_balance_converter(id):
+
+    wanted_amount = request.json['wanted_amount']
+    wanted_currency = request.json['currency']
+    required_rsd_money = request.json['required_money']
+
+    user_rsd_balance = Balance.query.get(id)
+    user_account_id = user_rsd_balance.user_account_id
+
+    balances = Balance.query.all()
+
+    old_balance = balances_schema.dump(
+        filter(lambda t: (t.user_account_id, t.currency) == (user_account_id, wanted_currency), balances)
+    )
+
+    user_rsd_balance.balance -= required_rsd_money
+    db.session.commit()
+
+    new_old_balance_id = -1
+
+    if old_balance:
+        the_old_balance = Balance.query.get(old_balance[0]["balance_id"])
+        the_old_balance.balance += wanted_amount
+        new_old_balance_id = the_old_balance.balance_id
+        db.session.commit()
+
+    else:
+        new_balance = Balance(user_account_id=user_account_id,
+                              currency=wanted_currency,
+                              balance=wanted_amount)
+        db.session.add(new_balance)
+        db.session.commit()
+        new_old_balance_id = new_balance.balance_id
+
+    send_user_balance = balances_schema.dump(
+        filter(lambda t: (t.user_account_id, t.currency) == (float(id), 'RSD'), balances)
+    )
+
+    return jsonify(user_balance=send_user_balance)
+

@@ -4,6 +4,7 @@ import ActionPanel from './HomePanels/ActionPanel'
 import BalancePanel from './HomePanels/BalancePanel'
 import TablePanel from './HomePanels/TablePanel'
 import ConvertPanel from './HomePanels/ConvertPanel'
+import APIServiceUpdateBalance from './APIServices/APIServiceUpdateBalance'
 import axios from "axios";
 import '../styling/Panels.css'
 
@@ -15,19 +16,24 @@ function Home () {
     const[required_money,setRequiredMoney] = useState(1)
     const[currency,setCurrency] = useState('RSD')
     const[rates,setRates] = useState([]);
+    const[rsd_balance_id,setRSDBalance] = useState(sessionStorage.getItem("balance_id"))
 
     const convertButton = () => {
         if(required_money > balance){
             alert("NOT ENOUGH MONEY")
         }
         else{
+            APIServiceUpdateBalance.UpdateBalanceConverter(rsd_balance_id, {wanted_amount,required_money,currency})
+            .then(response => {
+                sessionStorage.setItem("balance",response.user_balance[0]["balance"])
+            })
         }
 
     }
 
     function handleWantedAmountChange(wanted_amount) {
         setRequiredMoney(wanted_amount * rates['RSD'] / rates[currency])
-        setWantedAmount(wanted_amount);
+        setWantedAmount(parseFloat(wanted_amount));
     }
 
     function handleCurrencyChange(currency) {

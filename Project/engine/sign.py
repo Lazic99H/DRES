@@ -23,16 +23,19 @@ def sign_in():
     mail = request.json['mail']
     password = request.json['password']
     the_user = users_schema.dump(
-        filter(lambda t: (t.mail, t.password) == (mail, password), all_users)
+        filter(lambda t: (t.mail, t.password) == (mail, password), all_users) #OVO JE PRIMJER SA DVAAA
     )
 
     if the_user:
         access_token = create_access_token(identity=mail)
         print(the_user[0]['account_id'])
         user_balance = balances_schema.dump(
-            filter(lambda t: t.user_account_id == the_user[0]['account_id'], all_balances)
+            filter(lambda t: (t.user_account_id, t.currency) == (the_user[0]['account_id'], 'RSD'), all_balances)
         )
-        return jsonify(access_token=access_token, user=the_user, user_balance=user_balance)
+
+        return jsonify(access_token=access_token,
+                       user=the_user,
+                       user_balance=user_balance)
 
     return jsonify(the_user)
 
