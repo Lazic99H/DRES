@@ -1,50 +1,48 @@
 .panels > div {
-  border: 1px solid black;
+	 margin-top: 6px;
+	 margin-left: 5px;
+	 margin-right: 5px;
+	 border: 3px solid black;
 }
-
-.panels {
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: 225px auto auto;
-  grid-template-rows: auto auto;
+ .panels {
+	 background: white;
+	 display: grid;
+	 grid-gap: 10px;
+	 grid-template-columns: 225px auto auto;
+	 grid-template-rows: auto auto;
 }
-.panel-action {
-  grid-row: span 2;
+ .panel-action {
+     padding: 20px;
+	 grid-row: span 2;
 }
-.panel-positions {
-  grid-column: span 2;
+ .panel-positions {
+	 grid-column: span 2;
 }
-
-.panel-converter{
-    background-color: #161616;
-    color: #ddd;
-    padding: 10px;
-
-    h1{
-        color: #eef;
-        text-align: center;
-    }
-
-    button{
-        align: center;
-    }
+ .panel-converter {
+	 color: #ddd;
+	 padding: 10px;
 }
-
-media (max-width: 750px) {
-  .panels {
-    grid-template-columns: 225px auto;
-    grid-template-rows: auto auto auto;
-  }
-  .panel-positions {
-    grid-column: span 2;
-  }
+ .panel-converter h1 {
+	 color: #eef;
+	 text-align: center;
 }
-
-@media (max-width: 500px) {
-  .panels {
-    grid-template-columns: auto;
-  }
-  .panel-positions {
-    grid-column: span 1;
-  }
+ .panel-converter button {
+	 margin-left: 20px;
+}
+ @media (max-width: 750px) {
+	 .panels {
+		 grid-template-columns: 225px auto;
+		 grid-template-rows: auto auto auto;
+	}
+	 .panel-positions {
+		 grid-column: span 2;
+	}
+}
+ @media (max-width: 500px) {
+	 .panels {
+		 grid-template-columns: auto;
+	}
+	 .panel-positions {
+		 grid-column: span 1;
+	}
 }

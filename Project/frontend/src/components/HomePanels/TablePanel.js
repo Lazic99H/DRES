@@ -52,7 +52,7 @@ function TablePanel () {
 
     return (
       <div>
-        <h1> Transaction history {history["amount"]} </h1>
+        <h1 style={{color: 'black'}}> Transaction history </h1>
         <GlobalFilter
         preGlobalFilteredRows={preGlobalFilteredRows}
         setGlobalFilter={setGlobalFilter}

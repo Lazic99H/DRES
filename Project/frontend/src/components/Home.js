@@ -57,7 +57,7 @@ function Home () {
         <BalancePanel />
       </div>
       <div className="panel-converter">
-        <h1> Converter </h1>
+        <h1 style={{color: 'black'}}> Converter </h1>
         <ConvertPanel
             currencies={Object.keys(rates)}
             wanted_amount={wanted_amount}
@@ -70,8 +70,7 @@ function Home () {
             wanted_amount={required_money}
             currency={'RSD'}
         />
-
-        <button onClick={convertButton} className="btn btn-success profile-button" >Convert Money</button>
+        <button onClick={convertButton} className="btn btn-success profile-button" style={{background: 'black', border: 'black', marginLeft:'40%'}} >Convert Money</button>
       </div>
       <div className="panel-positions">
         <TablePanel/>

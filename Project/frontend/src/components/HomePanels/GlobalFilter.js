@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAsyncDebounce } from "react-table";
+import "../../styling/Filter.css"
 
 export function GlobalFilter({
   preGlobalFilteredRows,
@@ -14,7 +15,7 @@ export function GlobalFilter({
 
   return (
     <div>
-      <h2>Search:</h2>
+      <form className="search-box">
       <input
         value={value || ""}
         onChange={(e) => {
@@ -23,6 +24,8 @@ export function GlobalFilter({
         }}
         placeholder="Enter filter text"
       />
+      <button />
+      </form>
     </div>
   );
 }
