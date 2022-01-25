@@ -25,6 +25,7 @@ function ActionPanel () {
             {sessionStorage.getItem('verification') == 'false' ?
             <div className="mt-5 text-center">
                 <GoUnverified style={{background: 'white',color:'black', width:'25px', height:'25px'}}/>
+                <p></p>
                 <button onClick={verifyButton} style={{background: 'black', border: 'black'}} className="btn btn-primary profile-button" >Verify account</button>
             </div>
             :

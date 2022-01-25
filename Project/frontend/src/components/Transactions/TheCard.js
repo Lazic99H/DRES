@@ -73,6 +73,7 @@ function TheCard() {
             // payment_intent.succeeded event that handles any business critical
             // post-payment actions.
             sessionStorage.setItem('verification','true')
+            alert("YOU ARE NOW VERIFIED")
           }
         }
     }

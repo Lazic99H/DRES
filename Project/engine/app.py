@@ -9,6 +9,7 @@ from model.users import Users, UsersSchema
 from flask_jwt_extended import JWTManager
 from concurrent.futures import ThreadPoolExecutor
 
+"""
 def create_app():
     app = Flask(__name__)
     CORS(app)
@@ -28,6 +29,22 @@ def create_app():
 
 
 app = create_app()
+"""
+
+app = Flask(__name__)
+CORS(app)
+app.register_blueprint(bp_sign)
+app.register_blueprint(bp_profile)
+app.register_blueprint(bp_table)
+app.register_blueprint(bp_bank)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/dresdatabase'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False;
+app.config['JWT_SECRET_KEY'] = "askdjl12k3jl1ejasldkj12lk31j3lkqdjalsk"
+
+jwt = JWTManager(app)
+db.init_app(app)
+ma.init_app(app)
 
 user_schema = UsersSchema
 users_schema = UsersSchema(many=True)

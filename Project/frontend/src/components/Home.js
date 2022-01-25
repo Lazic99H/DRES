@@ -17,7 +17,7 @@ function Home () {
     const[currency,setCurrency] = useState('RSD')
     const[rates,setRates] = useState([]);
     const[rsd_balance_id,setRSDBalance] = useState(sessionStorage.getItem("balance_id"))
-
+    const[otherBalances,setOtherBalances] = useState([])
     const convertButton = () => {
         if(required_money > balance){
             alert("NOT ENOUGH MONEY")
@@ -26,9 +26,16 @@ function Home () {
             APIServiceUpdateBalance.UpdateBalanceConverter(rsd_balance_id, {wanted_amount,required_money,currency})
             .then(response => {
                 sessionStorage.setItem("balance",response.user_balance[0]["balance"])
+                setBalance(response.user_balance[0]["balance"])
             })
-        }
 
+            APIServiceUpdateBalance.UpdateBalances(sessionStorage.getItem("account_id"))
+            .then(resp => {
+                setOtherBalances(resp.other_balances)
+            })
+
+            alert("Money converted successfully")
+        }
     }
 
     function handleWantedAmountChange(wanted_amount) {
@@ -46,6 +53,8 @@ function Home () {
         .then(response => {
             setRates(response.data.rates);
         })
+        console.log(3)
+        setBalance(sessionStorage.getItem("balance"))
     },[]);
 
     return (
@@ -54,7 +63,10 @@ function Home () {
         <ActionPanel />
       </div>
       <div className="panel-balance">
-        <BalancePanel />
+        <BalancePanel
+            theBalance={balance}
+            otherBalance={otherBalances}
+        />
       </div>
       <div className="panel-converter">
         <h1 style={{color: 'black'}}> Converter </h1>

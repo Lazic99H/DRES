@@ -53,7 +53,7 @@ def update_database():
             filter(lambda t: t.mail == mail, all_users)
         )
 
-        user_id = -1;
+        user_id = -1
 
         if the_user:
             user_id = the_user[0]["account_id"]
@@ -271,7 +271,7 @@ def update_balance_converter(id):
         new_old_balance_id = new_balance.balance_id
 
     send_user_balance = balances_schema.dump(
-        filter(lambda t: (t.user_account_id, t.currency) == (float(id), 'RSD'), balances)
+        filter(lambda t: (t.user_account_id, t.currency) == (float(user_account_id), 'RSD'), balances)
     )
 
     return jsonify(user_balance=send_user_balance)
